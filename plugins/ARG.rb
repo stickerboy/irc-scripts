@@ -13,7 +13,7 @@ class ARG
 		@responses = YAML.load_file("#{DB_FOLDER}/ask.yaml")
 	end
 
-	match "ask"
+	match /ask .+\?$/i
 	def execute(m)
 		m.reply "#{@responses[rand(0...@responses.length)]}"
 	end

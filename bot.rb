@@ -7,7 +7,7 @@ bot = Cinch::Bot.new do
     c.realname = "stckr|pi1080p"
     c.user = "pi"
     c.server = "irc.uk.mibbit.net"
-    c.channels = ["#halo4arg","#Halo5"]
+    c.channels = ["#ilb"]
     c.plugins.plugins = [ARG]
   end
 end
