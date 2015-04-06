@@ -1,0 +1,30 @@
+help:
+    - "Use !ARG <command> - Available commands: nick, regnick, irc, site, ruby, yanumas, radialsim, hydrai, grollo, orkid, munge, n00b, tools, decode"
+cmd:
+    - "Command List: http://p.stckr.co.uk/6eCjDYKx?raw"
+nick:
+    - "Please use your Halo Waypoint Gamertag as your nickname in the chat. You can use /nick to change your nickname. Make sure not to use spaces, as they won\'t work, use dashes (-) or underscores (_) or simply remove the space :)"
+regnick:
+    - "It is advisable to register your nickname. See here for details: http://wiki.mibbit.com/index.php/Create_your_own_nickname"
+irc:
+    - "server: irc.mibbit.net, port: 6667"
+site:
+    - "http://section3.info"
+ruby:
+    - "ONI.rb: http://p.stckr.co.uk/447iQUaY?raw"
+yanumas:
+    - "Yanumas is celebrated each year on the 15th of November. You know, I hear that in some galactic timezones it is still Yanumas!"
+radialsim:
+    - "Radialsim was a dearly beloved AI, taken from us far too early. He is remembered each year on the 18th of November"
+hydrai:
+    - "| CURIOUS |"
+grollo:
+    - "Do not speak of the Grollow, for they may hear you. Guard your HP wisely OP"
+orkid:
+    - "| REDACTED |"
+n00b:
+    - "http://arg.furiousn00b.com/HUNTtheTRUTH"
+tools:
+    - "ONI Tools - http://www.furiousn00b.com/"
+decode:
+    - "Convertr - http://code.stckr.co.uk"
