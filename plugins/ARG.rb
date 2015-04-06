@@ -1,13 +1,20 @@
 require 'cinch'
 require 'yaml'
+require 'time_diff'
 
-DB_FOLDER = "plugins/db"
-SITREP = "http://j.mp/ONIsitrp"
-POTATO_URL = "http://halo.stckr.co.uk/media/img/halo5-potato.png"
-STATS_URL = "http://arg.furiousn00b.com/HUNTtheTRUTH/irc/halo5.html"
-LOGS_URL =  "http://halo.stckr.co.uk/"
-LOGS_DIR = "logs/TRUTH/2015/LOGS/"
-LOGS_REGEX = /([0-9]{2}-[0-9]{2}-[0-9]{4})/
+DB_FOLDER		= "plugins/db"
+SITREP			= "http://j.mp/ONIsitrp"
+POTATO_URL		= "http://halo.stckr.co.uk/media/img/halo5-potato.png"
+STATS_URL		= "http://arg.furiousn00b.com/HUNTtheTRUTH/irc/halo5.html"
+LOGS_URL		=  "http://halo.stckr.co.uk/"
+LOGS_DIR		= "logs/TRUTH/2015/LOGS/"
+LOGS_REGEX		= /([0-9]{2}-[0-9]{2}-[0-9]{4})/
+TUMBLR_URL		= "http://huntthetruth.tumblr.com"
+HALO5_URL		= "http://www.xbox.com/halo5"
+
+DATE_AUDIOLOG	= DateTime.new(2015,4,13,1,0,0)
+DATE_HALO5		= DateTime.new(2015,10,27,0,0,0)
+DATE_E3			= DateTime.new(2015,6,16,9,0,0)
 
 class ARG
 	include Cinch::Plugin
@@ -22,12 +29,30 @@ class ARG
 	match /slap (.+)/i, method: :slap
 	match /stats/i, method: :stats
 	match /logs (.+)/i, method: :logs
+	match /countdown/i, method: :countdown
+	match /halo5/i, method: :halo5
+	match /e3/i, method: :e3
 
 	def load_db(m)
 		#Probably want to figure out a way of loading this just once.
 		@responses = YAML.load_file("#{DB_FOLDER}/ask.yaml")
 		@arg = YAML.load_file("#{DB_FOLDER}/arg.yaml")
 		@slaps = YAML.load_file("#{DB_FOLDER}/slaps.yaml")
+	end
+
+	def countdown(m)
+		audiolog = Time.diff(Time.now, DATE_AUDIOLOG, '%d %h Hours %m Minutes')
+		m.reply "#HUNTtheTRUTH - Next audio log release: #{audiolog[:diff]} - #{TUMBLR_URL}"
+	end
+
+	def halo5(m)
+		halo5release = Time.diff(Time.now, DATE_HALO5, '%d %h Hours %m Minutes')
+		m.reply "#halo5 - Release Date 27th Oct 2015: #{halo5release[:diff]} - #{HALO5_URL}"
+	end
+
+	def e3(m)
+		e3launch = Time.diff(Time.now, DATE_E3, '%d %h Hours %m Minutes')
+		m.reply "Countdown to E3 2015 - June 16th to 18th: #{e3launch[:diff]}"
 	end
 
 	def ask(m)
