@@ -4,6 +4,10 @@ require 'yaml'
 DB_FOLDER = "plugins/db"
 SITREP = "http://j.mp/ONIsitrp"
 POTATO_URL = "http://halo.stckr.co.uk/media/img/halo5-potato.png"
+STATS_URL = "http://arg.furiousn00b.com/HUNTtheTRUTH/irc/halo5.html"
+LOGS_URL =  "http://halo.stckr.co.uk/"
+LOGS_DIR = "logs/TRUTH/2015/LOGS/"
+LOGS_REGEX = /([0-9]{2}-[0-9]{2}-[0-9]{4})/
 
 class ARG
 	include Cinch::Plugin
@@ -14,11 +18,16 @@ class ARG
 	match /sitrep/i, method: :sitrep
 	match /potato/i, method: :potato
 	match /arg .+/i, method: :arg
+	match /rimshot/i, method: :rimshot
+	match /slap (.+)/i, method: :slap
+	match /stats/i, method: :stats
+	match /logs (.+)/i, method: :logs
 
 	def load_db(m)
 		#Probably want to figure out a way of loading this just once.
 		@responses = YAML.load_file("#{DB_FOLDER}/ask.yaml")
 		@arg = YAML.load_file("#{DB_FOLDER}/arg.yaml")
+		@slaps = YAML.load_file("#{DB_FOLDER}/slaps.yaml")
 	end
 
 	def ask(m)
@@ -36,6 +45,22 @@ class ARG
 	def arg(m)
 		reply = @arg[m.message.downcase!.split(" ")[1]]
 		m.reply reply.nil? ? @arg["help"].first : reply.first
+	end
+
+	def rimshot(m)
+		m.action_reply "BA DOOM *TSH*"
+	end
+
+	def slap(m,nick)
+		m.action_reply "slaps #{nick} with #{@slaps[rand(0..@slaps.length)]}"
+	end
+
+	def stats(m)
+		m.reply STATS_URL
+	end
+
+	def logs(m,log)
+		m.reply log[LOGS_REGEX].nil? ? LOGS_URL : LOGS_URL  + LOGS_DIR + log + ".log"
 	end
 
 end
