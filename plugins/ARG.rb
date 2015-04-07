@@ -2,7 +2,6 @@ require 'cinch'
 require 'yaml'
 require 'time_diff'
 
-DB_FOLDER		= "plugins/db"
 SITREP			= "http://j.mp/ONIsitrp"
 POTATO_URL		= "http://halo.stckr.co.uk/media/img/halo5-potato.png"
 STATS_URL		= "http://arg.furiousn00b.com/HUNTtheTRUTH/irc/halo5.html"
@@ -31,10 +30,10 @@ class ARG
 	match /e3/i, method: :e3
 
 	def load_db(m)
-		@responses = YAML.load_file("#{DB_FOLDER}/ask.yaml")
-		@arg = YAML.load_file("#{DB_FOLDER}/arg.yaml")
-		@slaps = YAML.load_file("#{DB_FOLDER}/slaps.yaml")
-		@dates = YAML.load_file("#{DB_FOLDER}/dates.yaml")
+		@responses = YAML.load_file("#{config[:db]}/ask.yaml")
+		@arg = YAML.load_file("#{config[:db]}/arg.yaml")
+		@slaps = YAML.load_file("#{config[:db]}/slaps.yaml")
+		@dates = YAML.load_file("#{config[:db]}/dates.yaml")
 	end
 
 	def countdown(m)
@@ -86,7 +85,7 @@ class ARG
 	end
 
 	def identify(m)
-		@bot.irc.send("ns identify bob")
+		@bot.irc.send("ns identify #{config[:password]}")
 	end
 
 end
