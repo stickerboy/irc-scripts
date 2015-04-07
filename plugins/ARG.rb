@@ -12,10 +12,6 @@ LOGS_REGEX		= /([0-9]{2}-[0-9]{2}-[0-9]{4})/
 TUMBLR_URL		= "http://huntthetruth.tumblr.com"
 HALO5_URL		= "http://www.xbox.com/halo5"
 
-DATE_AUDIOLOG	= DateTime.new(2015,4,13,1,0,0)
-DATE_HALO5		= DateTime.new(2015,10,27,0,0,0)
-DATE_E3			= DateTime.new(2015,6,16,9,0,0)
-
 class ARG
 	include Cinch::Plugin
 
@@ -38,20 +34,21 @@ class ARG
 		@responses = YAML.load_file("#{DB_FOLDER}/ask.yaml")
 		@arg = YAML.load_file("#{DB_FOLDER}/arg.yaml")
 		@slaps = YAML.load_file("#{DB_FOLDER}/slaps.yaml")
+		@dates = YAML.load_file("#{DB_FOLDER}/dates.yaml")
 	end
 
 	def countdown(m)
-		audiolog = Time.diff(Time.now, DATE_AUDIOLOG, '%d %h Hours %m Minutes')
+		audiolog = Time.diff(Time.now, @dates["podcast"], '%d %h Hours %m Minutes')
 		m.reply "#HUNTtheTRUTH - Next audio log release: #{audiolog[:diff]} - #{TUMBLR_URL}"
 	end
 
 	def halo5(m)
-		halo5release = Time.diff(Time.now, DATE_HALO5, '%d %h Hours %m Minutes')
+		halo5release = Time.diff(Time.now, @dates["halo5"], '%d %h Hours %m Minutes')
 		m.reply "#halo5 - Release Date 27th Oct 2015: #{halo5release[:diff]} - #{HALO5_URL}"
 	end
 
 	def e3(m)
-		e3launch = Time.diff(Time.now, DATE_E3, '%d %h Hours %m Minutes')
+		e3launch = Time.diff(Time.now, @dates["e3"], '%d %h Hours %m Minutes')
 		m.reply "Countdown to E3 2015 - June 16th to 18th: #{e3launch[:diff]}"
 	end
 
