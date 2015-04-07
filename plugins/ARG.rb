@@ -19,7 +19,8 @@ DATE_E3			= DateTime.new(2015,6,16,9,0,0)
 class ARG
 	include Cinch::Plugin
 
-	hook :pre, method: :load_db
+	listen_to :connect, method: :identify
+	listen_to :connect, method: :load_db
 
 	match /ask .+\?$/i, method: :ask
 	match /sitrep/i, method: :sitrep
@@ -34,7 +35,6 @@ class ARG
 	match /e3/i, method: :e3
 
 	def load_db(m)
-		#Probably want to figure out a way of loading this just once.
 		@responses = YAML.load_file("#{DB_FOLDER}/ask.yaml")
 		@arg = YAML.load_file("#{DB_FOLDER}/arg.yaml")
 		@slaps = YAML.load_file("#{DB_FOLDER}/slaps.yaml")
@@ -86,6 +86,10 @@ class ARG
 
 	def logs(m,log)
 		m.reply log[LOGS_REGEX].nil? ? LOGS_URL : LOGS_URL  + LOGS_DIR + log + ".log"
+	end
+
+	def identify(m)
+		@bot.irc.send("ns identify bob")
 	end
 
 end
