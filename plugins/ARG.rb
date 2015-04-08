@@ -1,6 +1,8 @@
 require 'cinch'
 require 'yaml'
 require 'time_diff'
+require 'nokogiri'
+require 'open-uri'
 
 SITREP			= "http://j.mp/ONIsitrp"
 POTATO_URL		= "http://halo.stckr.co.uk/media/img/halo5-potato.png"
@@ -10,12 +12,14 @@ LOGS_DIR		= "logs/TRUTH/2015/LOGS/"
 LOGS_REGEX		= /([0-9]{2}-[0-9]{2}-[0-9]{4})/
 TUMBLR_URL		= "http://huntthetruth.tumblr.com"
 HALO5_URL		= "http://www.xbox.com/halo5"
+RSS_URL			= "http://huntthetruth.tumblr.com/rss"
 
 class ARG
 	include Cinch::Plugin
 
 	listen_to :connect, method: :identify
 	listen_to :connect, method: :load_db
+    timer 600, method: :timer
 
 	match /ask .+\?$/i, method: :ask
 	match /sitrep/i, method: :sitrep
@@ -34,6 +38,9 @@ class ARG
 		@arg = YAML.load_file("#{config[:db]}/arg.yaml")
 		@slaps = YAML.load_file("#{config[:db]}/slaps.yaml")
 		@dates = YAML.load_file("#{config[:db]}/dates.yaml")
+        @doc = Nokogiri::XML(open(RSS_URL))
+        @guid = Hash.new
+        @guid[1] = @doc.xpath('//guid').first.text
 	end
 
 	def countdown(m)
@@ -82,6 +89,20 @@ class ARG
 
 	def logs(m,log)
 		m.reply log[LOGS_REGEX].nil? ? LOGS_URL : LOGS_URL  + LOGS_DIR + log + ".log"
+	end
+
+	def timer
+        doc = Nokogiri::XML(open(RSS_URL))
+        guid = doc.xpath('//guid').first.text
+        title = doc.xpath('//title')[1].text
+
+        if(doc.xpath('//guid').first.text == @guid[1])
+            #
+        else
+            Channel("#halo5").notice "New HUNTtheTRUTH blog post: #{title} #{guid}"
+            @guid[1] = doc.xpath('//guid').first.text
+        end
+
 	end
 
 	def identify(m)
