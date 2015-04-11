@@ -28,7 +28,7 @@ class ARG
 	match /rimshot/i, method: :rimshot
 	match /slap (.+)/i, method: :slap
 	match /stats/i, method: :stats
-	match /logs (.+)/i, method: :logs
+	match /logs(.*)/i, method: :logs
 	match /countdown/i, method: :countdown
 	match /halo5/i, method: :halo5
 	match /e3/i, method: :e3
@@ -88,7 +88,7 @@ class ARG
 	end
 
 	def logs(m,log)
-		m.reply log[LOGS_REGEX].nil? ? LOGS_URL : LOGS_URL  + LOGS_DIR + log + ".log"
+		m.reply log[LOGS_REGEX].nil? ? LOGS_URL : LOGS_URL + LOGS_DIR + log.strip + ".log"
 	end
 
 	def timer
