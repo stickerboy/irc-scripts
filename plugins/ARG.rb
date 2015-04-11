@@ -19,7 +19,7 @@ class ARG
 
 	listen_to :connect, method: :identify
 	listen_to :connect, method: :load_db
-    timer 600, method: :timer
+	timer 600, method: :timer
 
 	match /ask .+\?$/i, method: :ask
 	match /sitrep/i, method: :sitrep
@@ -32,15 +32,16 @@ class ARG
 	match /countdown/i, method: :countdown
 	match /halo5/i, method: :halo5
 	match /e3/i, method: :e3
+	match /quit/i, method: :quit
 
 	def load_db(m)
 		@responses = YAML.load_file("#{config[:db]}/ask.yaml")
 		@arg = YAML.load_file("#{config[:db]}/arg.yaml")
 		@slaps = YAML.load_file("#{config[:db]}/slaps.yaml")
 		@dates = YAML.load_file("#{config[:db]}/dates.yaml")
-        @doc = Nokogiri::XML(open(RSS_URL))
-        @guid = Hash.new
-        @guid[1] = @doc.xpath('//guid').first.text
+		@doc = Nokogiri::XML(open(RSS_URL))
+		@guid = Hash.new
+		@guid[1] = @doc.xpath('//guid').first.text
 	end
 
 	def countdown(m)
@@ -92,18 +93,30 @@ class ARG
 	end
 
 	def timer
-        doc = Nokogiri::XML(open(RSS_URL))
-        guid = doc.xpath('//guid').first.text
-        title = doc.xpath('//title')[1].text
+		doc = Nokogiri::XML(open(RSS_URL))
+		guid = doc.xpath('//guid').first.text
+		title = doc.xpath('//title')[1].text
 
-        if(doc.xpath('//guid').first.text == @guid[1])
-            #
-        else
-            Channel("#halo5").notice "New HUNTtheTRUTH blog post: #{title} #{guid}"
-            @guid[1] = doc.xpath('//guid').first.text
-        end
+		if(doc.xpath('//guid').first.text == @guid[1])
+			#
+		else
+			Channel("#halo5").notice "New HUNTtheTRUTH blog post: #{title} #{guid}"
+			@guid[1] = doc.xpath('//guid').first.text
+		end
 
 	end
+
+  def quit(m)
+	unless m.user.nick == config[:quitnick]
+		(m.user)
+		bot.warn("Unauthorized quit command from #{m.user.nick}")
+		m.reply("I'm afraid I can't let you do that", true)
+		return
+	end
+
+	bot.info("Received valid quit command from #{m.user.name}")
+	bot.quit("And I shall taketh my leave, for #{m.user.name} doth command it!")
+  end
 
 	def identify(m)
 		@bot.irc.send("ns identify #{config[:password]}")
