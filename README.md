@@ -1,7 +1,8 @@
 ARGbot
 ======
 !ARG
-!ARG <command>
+
+!ARG \<command\>
 
 Available commands: help, nick, regnick, irc, site, ruby, yanumas, radialsim, hydrai, grollo, orkid, n00b, tools, decode
 
@@ -9,7 +10,8 @@ Available commands: help, nick, regnick, irc, site, ruby, yanumas, radialsim, hy
 Logs
 ====
 !logs
-!logs <date: MM-DD-YYYY>
+
+!logs \<date: MM-DD-YYYY\>
 
 Returns either a link to the IRC logs site, or a link to a specific log. All dates must be in the US date format
 
@@ -51,8 +53,9 @@ Countdown to the E3 2015 on June 16th 2015
 
 AskBot
 ======
-!ask <question>?
-!ask <command>
+!ask \<question\>?
+
+!ask \<command\>
 
 Questions must have a question mark at the end to return a response
 Available commands: version, what is love
@@ -60,7 +63,7 @@ Available commands: version, what is love
 
 Slap
 ====
-!slap <user>
+!slap \<user\>
 
 Slaps a user with a comical response
 
