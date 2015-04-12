@@ -19,6 +19,7 @@ class ARG
 
 	listen_to :connect, method: :identify
 	listen_to :connect, method: :load_db
+	listen_to :connect, method: :load_rss
 	timer 600, method: :timer
 
 	match /ask .+\?$/i, method: :ask
@@ -34,12 +35,16 @@ class ARG
 	match /e3/i, method: :e3
 	match /join(.*)/i, method: :join
 	match /quit/i, method: :quit
+	match /rehash/i, method: :load_db
 
 	def load_db(m)
 		@responses = YAML.load_file("#{config[:db]}/ask.yaml")
 		@arg = YAML.load_file("#{config[:db]}/arg.yaml")
 		@slaps = YAML.load_file("#{config[:db]}/slaps.yaml")
 		@dates = YAML.load_file("#{config[:db]}/dates.yaml")
+	end
+
+	def load_rss(m)
 		@doc = Nokogiri::XML(open(RSS_URL))
 		@guid = Hash.new
 		@guid[1] = @doc.xpath('//guid').first.text
