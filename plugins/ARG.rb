@@ -24,7 +24,7 @@ class ARG
 	match /ask .+\?$/i, method: :ask
 	match /sitrep/i, method: :sitrep
 	match /potato/i, method: :potato
-	match /arg .+/i, method: :arg
+	match /arg(.*)/i, method: :arg
 	match /rimshot/i, method: :rimshot
 	match /slap (.+)/i, method: :slap
 	match /stats/i, method: :stats
@@ -71,9 +71,8 @@ class ARG
 		m.reply "Hi, how are you holding up? Because I'm a potato - #{POTATO_URL}"
 	end
 
-	def arg(m)
-		reply = @arg[m.message.downcase!.split(" ")[1]]
-		m.reply reply.nil? ? @arg["help"].first : reply.first
+	def arg(m,q)
+		m.reply q.empty? ? @arg["help"].first : @arg[q.strip.downcase].first
 	end
 
 	def rimshot(m)
