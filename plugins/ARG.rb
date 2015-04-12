@@ -80,7 +80,7 @@ class ARG
 	end
 
 	def slap(m,nick)
-		m.action_reply "slaps #{nick} with #{@slaps[rand(0..@slaps.length)]}"
+		m.action_reply "slaps #{nick.strip} with #{@slaps[rand(0..@slaps.length)]}"
 	end
 
 	def stats(m)
