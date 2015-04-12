@@ -32,6 +32,7 @@ class ARG
 	match /countdown/i, method: :countdown
 	match /halo5/i, method: :halo5
 	match /e3/i, method: :e3
+	match /join(.*)/i, method: :join
 	match /quit/i, method: :quit
 
 	def load_db(m)
@@ -105,17 +106,25 @@ class ARG
 
 	end
 
-  def quit(m)
-	unless m.user.nick == config[:quitnick]
-		(m.user)
-		bot.warn("Unauthorized quit command from #{m.user.nick}")
-		m.reply("I'm afraid I can't let you do that", true)
-		return
+	def join(m, channel)
+		if m.channel.opped? m.user
+			Channel(channel).join
+		else
+            m.reply("Ha! Lower being, you dare summon me? You have no power here")
+        end
 	end
 
-	bot.info("Received valid quit command from #{m.user.name}")
-	bot.quit("And I shall taketh my leave, for #{m.user.name} doth command it!")
-  end
+	def quit(m)
+		unless m.user.nick == config[:quitnick]
+			(m.user)
+			bot.warn("Unauthorized quit command from #{m.user.nick}")
+			m.reply("I'm afraid I can't let you do that", true)
+			return
+		end
+
+		bot.info("Received valid quit command from #{m.user.name}")
+		bot.quit("And I shall taketh my leave, for #{m.user.name} doth command it!")
+	end
 
 	def identify(m)
 		@bot.irc.send("ns identify #{config[:password]}")
