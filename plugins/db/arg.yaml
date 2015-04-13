@@ -1,5 +1,5 @@
 help:
-    - "Use !ARG <command> - Available commands: nick, regnick, irc, site, ruby, yanumas, radialsim, hydrai, grollo, orkid, munge, n00b, tools, decode"
+    - "Use !arg <command> - Available commands: nick, regnick, irc, site, ruby, yanumas, radialsim, hydrai, grollo, orkid, n00b, tools, decode"
 cmd:
     - "Command List: http://p.stckr.co.uk/6eCjDYKx?raw"
 nick:
