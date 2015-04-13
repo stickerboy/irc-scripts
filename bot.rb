@@ -6,6 +6,9 @@ config = YAML.load_file("config.yaml")
 
 p config[:channels]
 
+#Add the owner to the admins access list automatically.
+config[:admins] << config[:owner]
+
 bot = Cinch::Bot.new do
   configure do |c|
 	c.nick = config[:nick]
@@ -17,7 +20,8 @@ bot = Cinch::Bot.new do
 	c.plugins.options[ARG] = {
 		:password => config[:password],
 		:db => config[:db],
-		:quitnick => config[:quitnick]
+		:owner => config[:owner],
+		:admins => config[:admins]
    }
   end
 end

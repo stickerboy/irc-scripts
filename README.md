@@ -74,7 +74,12 @@ Just run it!
 
 - - -
 
-###Join Chanel
+###Join Channel
 !join \<channel\>
 
-Joins a specific channel - only available for use by channel operators
+Joins a specific channel - only available for use by bot admins
+
+###Part Channel
+!part \<channel\>
+
+Parts a specific channel - only available for use by bot admins
