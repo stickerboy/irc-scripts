@@ -9,6 +9,20 @@ p config[:channels]
 #Add the owner to the admins access list automatically.
 config[:admins] << config[:owner]
 
+#Export config as a global (for outside classes)
+$config = config
+
+#Modify the base user class to give us useful methods.
+class Cinch::User
+	def admin?
+		$config[:admins].include?(self.nick)
+	end
+
+	def owner?
+		$config[:owner].eql?(self.nick)
+	end
+end
+
 bot = Cinch::Bot.new do
   configure do |c|
 	c.nick = config[:nick]

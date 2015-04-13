@@ -41,8 +41,6 @@ class ARG
 	match /rehash/i, method: :load_db
 
 	def load_db(m)
-		#Export config as a global (for outside classes)
-		$config = config;
 		@responses = YAML.load_file("#{config[:db]}/ask.yaml")
 		@arg = YAML.load_file("#{config[:db]}/arg.yaml")
 		@slaps = YAML.load_file("#{config[:db]}/slaps.yaml")
@@ -134,18 +132,6 @@ class ARG
 
 	def identify(m)
 		bot.irc.send("ns identify #{config[:password]}")
-	end
-
-
-	#Modify the base user class to give us useful methods.
-	class Cinch::User
-		def admin?
-			$config[:admins].include?(self.nick)
-		end
-
-		def owner?
-			$config[:owner].eql?(self.nick)
-		end
 	end
 
 end
