@@ -123,7 +123,7 @@ class ARG
 	def quit(m,msg)
 		if User(m.user.nick).owner?
 			bot.info("Received valid quit command from #{m.user.name}")
-			bot.quit(msg.strip.empty? ? "And I shall taketh my leave, for #{m.user.name} doth command it!" : msg.strip)
+			bot.quit(msg.strip.empty?? "And I shall taketh my leave, for #{m.user.name} doth command it!" : msg.strip)
 		else
 			bot.warn("Unauthorized quit command from #{m.user.nick}")
 			m.reply("I'm afraid I can't let you do that", true)
