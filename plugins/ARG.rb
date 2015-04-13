@@ -14,6 +14,8 @@ TUMBLR_URL		= "http://huntthetruth.tumblr.com"
 HALO5_URL		= "http://www.xbox.com/halo5"
 RSS_URL			= "http://huntthetruth.tumblr.com/rss"
 
+ACCESS_DENIED   = "Ha! Lower being, you dare summon me? You have no power here"
+
 class ARG
 	include Cinch::Plugin
 
@@ -33,11 +35,14 @@ class ARG
 	match /countdown/i, method: :countdown
 	match /halo5/i, method: :halo5
 	match /e3/i, method: :e3
-	match /join(.*)/i, method: :join
+	match /join (#[[:alnum:]]+)/i, method: :join
+	match /part (#[[:alnum:]]+)/i, method: :part
 	match /quit/i, method: :quit
 	match /rehash/i, method: :load_db
 
 	def load_db(m)
+		#Export config as a global (for outside classes)
+		$config = config;
 		@responses = YAML.load_file("#{config[:db]}/ask.yaml")
 		@arg = YAML.load_file("#{config[:db]}/arg.yaml")
 		@slaps = YAML.load_file("#{config[:db]}/slaps.yaml")
@@ -78,7 +83,7 @@ class ARG
 	end
 
 	def arg(m,q)
-		m.reply q.empty? ? @arg["help"].first : @arg[q.strip.downcase].first
+		m.reply q.empty?? @arg["help"].first : @arg[q.strip.downcase].first
 	end
 
 	def rimshot(m)
@@ -94,7 +99,7 @@ class ARG
 	end
 
 	def logs(m,log)
-		m.reply log[LOGS_REGEX].nil? ? LOGS_URL : LOGS_URL + LOGS_DIR + log.strip + ".log"
+		m.reply log[LOGS_REGEX].nil?? LOGS_URL : "#{LOGS_URL}#{LOGS_DIR}#{log.strip}.log"
 	end
 
 	def timer
@@ -102,9 +107,7 @@ class ARG
 		guid = doc.xpath('//guid').first.text
 		title = doc.xpath('//title')[1].text
 
-		if(doc.xpath('//guid').first.text == @guid[1])
-			#
-		else
+		if(doc.xpath('//guid').first.text != @guid[1])
 			Channel("#halo5").notice "New HUNTtheTRUTH blog post: #{title} #{guid}"
 			@guid[1] = doc.xpath('//guid').first.text
 		end
@@ -112,27 +115,37 @@ class ARG
 	end
 
 	def join(m, channel)
-		if m.channel.opped? m.user
-			Channel(channel).join
-		else
-            m.reply("Ha! Lower being, you dare summon me? You have no power here")
-        end
+		User(m.user.nick).admin?? Channel(channel).join : m.reply(ACCESS_DENIED)
+	end
+
+	def part(m,channel)
+		User(m.user.nick).admin?? Channel(channel).part : m.reply(ACCESS_DENIED)
 	end
 
 	def quit(m)
-		unless m.user.nick == config[:quitnick]
-			(m.user)
+		if User(m.user.nick).owner?
+			bot.info("Received valid quit command from #{m.user.name}")
+			bot.quit("And I shall taketh my leave, for #{m.user.name} doth command it!")
+		else
 			bot.warn("Unauthorized quit command from #{m.user.nick}")
 			m.reply("I'm afraid I can't let you do that", true)
-			return
 		end
-
-		bot.info("Received valid quit command from #{m.user.name}")
-		bot.quit("And I shall taketh my leave, for #{m.user.name} doth command it!")
 	end
 
 	def identify(m)
-		@bot.irc.send("ns identify #{config[:password]}")
+		bot.irc.send("ns identify #{config[:password]}")
+	end
+
+
+	#Modify the base user class to give us useful methods.
+	class Cinch::User
+		def admin?
+			$config[:admins].include?(self.nick)
+		end
+
+		def owner?
+			$config[:owner].eql?(self.nick)
+		end
 	end
 
 end
