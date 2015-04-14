@@ -37,7 +37,7 @@ class ARG
 	match /e3/i, method: :e3
 	match /join (#[[:alnum:]]+)/i, method: :join
 	match /part (#[[:alnum:]]+)/i, method: :part
-	match /quit/i, method: :quit
+	match /quit(.*)/i, method: :quit
 	match /rehash/i, method: :load_db
 
 	def load_db(m)
@@ -112,7 +112,7 @@ class ARG
 
 	end
 
-	def join(m, channel)
+	def join(m,channel)
 		User(m.user.nick).admin?? Channel(channel).join : m.reply(ACCESS_DENIED)
 	end
 
@@ -120,10 +120,10 @@ class ARG
 		User(m.user.nick).admin?? Channel(channel).part : m.reply(ACCESS_DENIED)
 	end
 
-	def quit(m)
+	def quit(m,msg)
 		if User(m.user.nick).owner?
 			bot.info("Received valid quit command from #{m.user.name}")
-			bot.quit("And I shall taketh my leave, for #{m.user.name} doth command it!")
+			bot.quit(msg.strip.empty?? "And I shall taketh my leave, for #{m.user.name} doth command it!" : msg.strip)
 		else
 			bot.warn("Unauthorized quit command from #{m.user.nick}")
 			m.reply("I'm afraid I can't let you do that", true)
