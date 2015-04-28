@@ -5,6 +5,7 @@ require 'nokogiri'
 require 'open-uri'
 
 SITREP			= "http://j.mp/ONIsitrp"
+HYPE_URL		= "http://halo.stckr.co.uk/media/img/hype.png"
 POTATO_URL		= "http://halo.stckr.co.uk/media/img/halo5-potato.png"
 STATS_URL		= "http://arg.furiousn00b.com/HUNTtheTRUTH/irc/halo5.html"
 LOGS_URL		=  "http://halo.stckr.co.uk/"
@@ -26,6 +27,7 @@ class ARG
 
 	match /ask .+\?$/i, method: :ask
 	match /sitrep/i, method: :sitrep
+	match /hype/i, method: :hype
 	match /potato/i, method: :potato
 	match /arg(.*)/i, method: :arg
 	match /rimshot/i, method: :rimshot
@@ -74,6 +76,10 @@ class ARG
 
 	def sitrep(m)
 		m.reply "//CLASSIFIED//TRUTH//SITREP - #{SITREP}"
+	end
+
+	def hype(m)
+		m.reply "#{HYPE_URL}"
 	end
 
 	def potato(m)
