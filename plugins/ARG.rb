@@ -16,6 +16,7 @@ HALO5_URL		= "http://www.xbox.com/halo5"
 RSS_URL			= "http://huntthetruth.tumblr.com/rss"
 
 ACCESS_DENIED   = "Ha! Lower being, you dare summon me? You have no power here"
+CHANGE_NICK     = "Please use your Halo Waypoint Username or Gamertag as your nickname in the chat. You can use /nick to change your nickname. Make sure not to use spaces, as they won't work, use dashes (-) or underscores (_) or simply remove the space :)"
 
 class ARG
 	include Cinch::Plugin
@@ -23,6 +24,7 @@ class ARG
 	listen_to :connect, method: :identify
 	listen_to :connect, method: :load_db
 	listen_to :connect, method: :load_rss
+	listen_to :join, method: :notify_mib
 	timer 600, method: :timer
 
 	match /ask .+\?$/i, method: :ask
@@ -116,6 +118,10 @@ class ARG
 			@guid[1] = doc.xpath('//guid').first.text
 		end
 
+	end
+
+	def notify_mib(m)
+		if m.user.nick.match(/^mib_/) then User(m.user.nick).notice(CHANGE_NICK) end
 	end
 
 	def join(m,channel)
