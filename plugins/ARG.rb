@@ -3,6 +3,7 @@ require 'yaml'
 require 'time_diff'
 require 'nokogiri'
 require 'open-uri'
+require 'json'
 
 SITREP			= "http://j.mp/ONIsitrp"
 HYPE_URL		= "http://halo.stckr.co.uk/media/img/hype.png"
@@ -14,6 +15,7 @@ LOGS_REGEX		= /([0-9]{2}-[0-9]{2}-[0-9]{4})/
 TUMBLR_URL		= "http://huntthetruth.tumblr.com"
 HALO5_URL		= "http://www.xbox.com/halo5"
 RSS_URL			= "http://huntthetruth.tumblr.com/rss"
+SIGNAL_URL      = "http://93208466931351102797.com/709782/date.php"
 
 ACCESS_DENIED   = "Ha! Lower being, you dare summon me? You have no power here"
 CHANGE_NICK     = "Please use your Halo Waypoint Username or Gamertag as your nickname in the chat. You can use /nick to change your nickname. Make sure not to use spaces, as they won't work, use dashes (-) or underscores (_) or simply remove the space :)"
@@ -30,6 +32,7 @@ class ARG
 	match /ask .+\?$/i, method: :ask
 	match /sitrep/i, method: :sitrep
 	match /hype/i, method: :hype
+	match /signal/i, method: :signal
 	match /potato/i, method: :potato
 	match /arg(.*)/i, method: :arg
 	match /rimshot/i, method: :rimshot
@@ -82,6 +85,13 @@ class ARG
 
 	def hype(m)
 		m.reply "#{HYPE_URL}"
+	end
+
+	def signal(m)
+		timeDiff = JSON.parse(open(SIGNAL_URL).read)["timeDiff"]
+		currentTime = Time.now
+		timeRemaining = Time.diff(currentTime, Time.at(currentTime.to_i+timeDiff), "%h:%m:%s")[:diff]
+		m.reply "[http://www.huntthesignal.com] Time Remaining: #{timeRemaining}"
 	end
 
 	def potato(m)
