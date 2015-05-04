@@ -72,6 +72,12 @@ BA DOOM \*_TSH_\*
 
 Just run it!
 
+
+###Crickets
+**!crickets**
+
+...
+
 - - -
 
 ###Join Channel
