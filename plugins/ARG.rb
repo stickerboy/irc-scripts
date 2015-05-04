@@ -144,6 +144,7 @@ class ARG
 		bot.info "Current MD5: #{currentSum}"
 		if @htsSum != currentSum
 			Channel('#Halo5').notice "http://huntthesignal.com has changed!"
+			@htsSum = currentSum
 		end
 	end
 
