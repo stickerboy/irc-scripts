@@ -27,7 +27,7 @@ class ARG
 	listen_to :connect, method: :load_db
 	listen_to :connect, method: :load_rss
 	listen_to :join, method: :notify_mib
-	timer 600, method: :timer
+	timer 180, method: :timer
 
 	match /ask .+\?$/i, method: :ask
 	match /sitrep/i, method: :sitrep
