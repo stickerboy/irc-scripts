@@ -3,6 +3,8 @@ require 'yaml'
 require 'time_diff'
 require 'nokogiri'
 require 'open-uri'
+require 'net/http'
+require 'digest'
 require 'json'
 
 SITREP			= "http://j.mp/ONIsitrp"
@@ -19,6 +21,7 @@ SIGNAL_URL      = "http://93208466931351102797.com/709782/date.php"
 
 ACCESS_DENIED   = "Ha! Lower being, you dare summon me? You have no power here"
 CHANGE_NICK     = "Please use your Halo Waypoint Username or Gamertag as your nickname in the chat. You can use /nick to change your nickname. Make sure not to use spaces, as they won't work, use dashes (-) or underscores (_) or simply remove the space :)"
+HUNT_THE_SIGNAL_URL = "https://www.huntthesignal.com"
 
 class ARG
 	include Cinch::Plugin
@@ -28,6 +31,7 @@ class ARG
 	listen_to :connect, method: :load_rss
 	listen_to :join, method: :notify_mib
 	timer 180, method: :timer
+	timer 600, method: :hts_changes
 
 	match /ask .+\?$/i, method: :ask
 	match /sitrep/i, method: :sitrep
@@ -52,6 +56,8 @@ class ARG
 		@arg = YAML.load_file("#{config[:db]}/arg.yaml")
 		@slaps = YAML.load_file("#{config[:db]}/slaps.yaml")
 		@dates = YAML.load_file("#{config[:db]}/dates.yaml")
+
+		@htsSum = page_sum(HUNT_THE_SIGNAL_URL)
 	end
 
 	def load_rss(m)
@@ -130,6 +136,15 @@ class ARG
 
 	end
 
+	def hts_changes
+		currentSum = page_sum(HUNT_THE_SIGNAL_URL)
+		bot.info "Expected MD5: #{@htsSum}"
+		bot.info "Current MD5: #{currentSum}"
+		if @htsSum != currentSum
+			Channel('#Halo5').notice "http://huntthesignal.com has changed!"
+		end
+	end
+
 	def notify_mib(m)
 		if m.user.nick.match(/^mib_/) then User(m.user.nick).notice(CHANGE_NICK) end
 	end
@@ -154,6 +169,12 @@ class ARG
 
 	def identify(m)
 		bot.irc.send("ns identify #{config[:password]}")
+	end
+
+	def page_sum(page)
+		response = Net::HTTP.get_response(URI(page))
+		data = open(response['location']).read
+		Digest::MD5.hexdigest(data)
 	end
 
 end

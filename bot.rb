@@ -1,7 +1,8 @@
 require 'cinch'
 require 'yaml'
 require_relative 'plugins/ARG.rb'
-
+#Unfortunately required to simplify opening SSL URLs with open-uri
+OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 config = YAML.load_file("config.yaml")
 
 p config[:channels]
