@@ -16,6 +16,7 @@ TUMBLR_URL		= "http://huntthetruth.tumblr.com"
 HALO5_URL		= "http://www.xbox.com/halo5"
 RSS_URL			= "http://huntthetruth.tumblr.com/rss"
 SIGNAL_URL      = "http://93208466931351102797.com/709782/date.php"
+CRICKETS_URL	= "https://www.youtube.com/watch?v=K8E_zMLCRNg"
 
 ACCESS_DENIED   = "Ha! Lower being, you dare summon me? You have no power here"
 CHANGE_NICK     = "Please use your Halo Waypoint Username or Gamertag as your nickname in the chat. You can use /nick to change your nickname. Make sure not to use spaces, as they won't work, use dashes (-) or underscores (_) or simply remove the space :)"
@@ -46,6 +47,7 @@ class ARG
 	match /part (#[[:alnum:]]+)/i, method: :part
 	match /quit(.*)/i, method: :quit
 	match /rehash/i, method: :load_db
+	match /crickets/i, method: :crickets
 
 	def load_db(m)
 		@responses = YAML.load_file("#{config[:db]}/ask.yaml")
@@ -154,6 +156,10 @@ class ARG
 
 	def identify(m)
 		bot.irc.send("ns identify #{config[:password]}")
+	end
+
+	def crickets(m)
+		m.reply CRICKETS_URL
 	end
 
 end
