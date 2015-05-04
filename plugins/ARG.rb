@@ -177,7 +177,8 @@ class ARG
 		response = Net::HTTP.get_response(URI(page))
 		data = open(response['location']).read
 		Digest::MD5.hexdigest(data)
-		
+	end
+
 	def crickets(m)
 		m.reply CRICKETS_URL
 	end
