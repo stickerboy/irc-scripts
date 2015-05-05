@@ -48,6 +48,7 @@ class ARG
 	match /countdown/i, method: :countdown
 	match /halo5/i, method: :halo5
 	match /e3/i, method: :e3
+	match /say (#\w+) (.+)/i, method: :say
 	match /join (#[[:alnum:]]+)/i, method: :join
 	match /part (#[[:alnum:]]+)/i, method: :part
 	match /quit(.*)/i, method: :quit
@@ -176,6 +177,10 @@ class ARG
 		result = @whois[User(m.user.nick).host]
 		result << m.user.nick
 		result.uniq!
+	end
+
+	def say(m,channel,msg)
+		User(m.user.nick).admin?? Channel(channel).send(msg.strip) : m.reply(ACCESS_DENIED)
 	end
 
 	def join(m,channel)
