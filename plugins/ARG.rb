@@ -212,10 +212,14 @@ class ARG
 	end
 
 	def whois(m,nick)
-		hostmask = User(nick).host
-		search = hostmask.nil?? nick : hostmask
-		results = @whois.has_key?(search) ? @whois[search] : nil
-		m.reply results.nil?? "No known matches." : "Known aliases: #{results.join(", ")}"
+		if User(m.user.nick).admin?
+			hostmask = User(nick).host
+			search = hostmask.nil?? nick : hostmask
+			results = @whois.has_key?(search) ? @whois[search] : nil
+			m.reply results.nil?? "No known matches." : "Known aliases: #{results.join(", ")}"
+		else
+			m.reply ACCESS_DENIED
+		end
 	end
 
 end
