@@ -52,12 +52,14 @@ class ARG
 	match /quit(.*)/i, method: :quit
 	match /rehash/i, method: :load_db
 	match /crickets/i, method: :crickets
+	match /whois ([[:print:]]+)/i, method: :whois
 
 	def load_db(m)
 		@responses = YAML.load_file("#{config[:db]}/ask.yaml")
 		@arg = YAML.load_file("#{config[:db]}/arg.yaml")
 		@slaps = YAML.load_file("#{config[:db]}/slaps.yaml")
 		@dates = YAML.load_file("#{config[:db]}/dates.yaml")
+		@whois = YAML.load_file("#{config[:db]}/whois.yaml")
 
 		@htsSum = page_sum(HUNT_THE_SIGNAL_URL)
 	end
@@ -182,5 +184,12 @@ class ARG
 
 	def crickets(m)
 		m.reply CRICKETS_URL
+	end
+
+	def whois(m,nick)
+		hostmask = User(nick).host
+		search = hostmask.nil?? nick : hostmask
+		results = @whois[search]
+		m.reply results.nil?? "No known matches." : "Known aliases: #{results.join(", ")}"
 	end
 end
