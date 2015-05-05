@@ -30,6 +30,7 @@ class ARG
 	listen_to :connect, method: :identify
 	listen_to :connect, method: :load_db
 	listen_to :connect, method: :load_rss
+	listen_to :connect, method: :load_whois
 	listen_to :join, method: :join_events
 	timer 180, method: :timer
 	timer 600, method: :hts_changes
@@ -61,13 +62,16 @@ class ARG
 		@arg = YAML.load_file("#{config[:db]}/arg.yaml")
 		@slaps = YAML.load_file("#{config[:db]}/slaps.yaml")
 		@dates = YAML.load_file("#{config[:db]}/dates.yaml")
+
+		@htsSum = page_sum(HUNT_THE_SIGNAL_URL)
+	end
+
+	def load_whois(m)
 		@whois = Hash.new { |k,v| k[v] = Array.new }
 		if File.exists?("#{config[:db]}/whois.yaml") then
 			#We want to do this to preserve the fact that empty results still return an empty array rather than nil.
 			@whois.update(YAML.load_file("#{config[:db]}/whois.yaml"))
 		end
-
-		@htsSum = page_sum(HUNT_THE_SIGNAL_URL)
 	end
 
 	def load_rss(m)
