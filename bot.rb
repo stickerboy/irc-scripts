@@ -10,22 +10,24 @@ p config[:channels]
 
 #Add the owner to the admins access list automatically.
 config[:admins] << config[:owner]
+config[:trusted] << config[:admins]
+config[:trusted].flatten!
 
 #Export config as a global (for outside classes)
 $config = config
 
 #Modify the base user class to give us useful methods.
 class Cinch::User
-	def trusted?
-		$config[:trusted].include?(self.nick)
+	def owner?
+		$config[:owner].eql?(self.nick)
 	end
 
 	def admin?
 		$config[:admins].include?(self.nick)
 	end
 
-	def owner?
-		$config[:owner].eql?(self.nick)
+	def trusted?
+		$config[:admins].include?(self.nick)
 	end
 end
 
