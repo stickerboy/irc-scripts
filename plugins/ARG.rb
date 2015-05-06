@@ -30,11 +30,10 @@ class ARG
 	listen_to :connect, method: :identify
 	listen_to :connect, method: :load_db
 	listen_to :connect, method: :load_rss
-	listen_to :connect, method: :load_whois
 	listen_to :join, method: :join_events
+	
 	timer 180, method: :timer
 	timer 600, method: :hts_changes
-	timer 600, method: :write_changes
 
 	match /ask .+\?$/i, method: :ask
 	match /sitrep/i, method: :sitrep
@@ -55,7 +54,6 @@ class ARG
 	match /quit(.*)/i, method: :quit
 	match /rehash/i, method: :load_db
 	match /crickets/i, method: :crickets
-	match /whois ([[:print:]]+)/i, method: :whois
 
 	def load_db(m)
 		@responses = YAML.load_file("#{config[:db]}/ask.yaml")
@@ -64,14 +62,6 @@ class ARG
 		@dates = YAML.load_file("#{config[:db]}/dates.yaml")
 
 		@htsSum = page_sum(HUNT_THE_SIGNAL_URL)
-	end
-
-	def load_whois(m)
-		@whois = Hash.new { |k,v| k[v] = Array.new }
-		if File.exists?("#{config[:db]}/whois.yaml") then
-			#We want to do this to preserve the fact that empty results still return an empty array rather than nil.
-			@whois.update(YAML.load_file("#{config[:db]}/whois.yaml"))
-		end
 	end
 
 	def load_rss(m)
@@ -160,27 +150,12 @@ class ARG
 		end
 	end
 
-	#Flush new data to the drive every five minutes.
-	def write_changes
-		bot.info("Writing recent changes...")
-		IO.binwrite("#{config[:db]}/whois.yaml",@whois.to_yaml)
-		#Probably should actually add some error handling/backup type stuff.
-		bot.info("Write complete.")
-	end
-
 	def join_events(m)
 		notify_mib(m)
-		update_whois(m)
 	end
 
 	def notify_mib(m)
 		if m.user.nick.match(/^mib_/) then User(m.user.nick).notice(CHANGE_NICK) end
-	end
-
-	def update_whois(m)
-		result = @whois[User(m.user.nick).host]
-		result << m.user.nick
-		result.uniq!
 	end
 
 	def say(m,channel,msg)
@@ -197,8 +172,10 @@ class ARG
 
 	def quit(m,msg)
 		if User(m.user.nick).owner?
+			bot.plugins.each { |plugin|
+				plugin.respond_to?(:write) ? plugin.write : nil
+			}
 			bot.info("Received valid quit command from #{m.user.name}")
-			write_changes
 			bot.quit(msg.strip.empty?? "And I shall taketh my leave, for #{m.user.name} doth command it!" : msg.strip)
 		else
 			bot.warn("Unauthorized quit command from #{m.user.nick}")
@@ -218,17 +195,6 @@ class ARG
 
 	def crickets(m)
 		m.reply CRICKETS_URL
-	end
-
-	def whois(m,nick)
-		if User(m.user.nick).admin?
-			hostmask = User(nick).host
-			search = hostmask.nil?? nick : hostmask
-			results = @whois.has_key?(search) ? @whois[search] : nil
-			m.reply results.nil?? "No known matches." : "Known aliases: #{results.join(", ")}"
-		else
-			m.reply ACCESS_DENIED
-		end
 	end
 
 end
