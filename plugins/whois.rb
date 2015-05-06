@@ -31,7 +31,7 @@ class Whois
 	end
 
 	def whois(m,nick)
-		if User(m.user.nick).admin?
+		if User(m.user.nick).trusted?
 			hostmask = User(nick).host
 			search = hostmask.nil?? nick : hostmask
 			results = @whois.has_key?(search) ? @whois[search] : nil

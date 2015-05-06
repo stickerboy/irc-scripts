@@ -16,6 +16,10 @@ $config = config
 
 #Modify the base user class to give us useful methods.
 class Cinch::User
+	def trusted?
+		$config[:trusted].include?(self.nick)
+	end
+
 	def admin?
 		$config[:admins].include?(self.nick)
 	end
@@ -37,7 +41,8 @@ bot = Cinch::Bot.new do
 		:password => config[:password],
 		:db => config[:db],
 		:owner => config[:owner],
-		:admins => config[:admins]
+		:admins => config[:admins],
+		:trusted => config[:trusted]
    }
    c.plugins.options[Whois] = { :db => config[:db] }
   end
