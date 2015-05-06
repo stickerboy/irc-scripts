@@ -3,6 +3,8 @@ class Whois
 
 	listen_to :connect, method: :load
 	listen_to :join, method: :update
+	listen_to :part, method: :update
+	listen_to :nick, method: :update
 
 	timer 600, method: :write
 
