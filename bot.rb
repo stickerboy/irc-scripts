@@ -6,12 +6,9 @@ require_relative 'plugins/whois.rb'
 OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 config = YAML.load_file("config.yaml")
 
-p config[:channels]
-
 #Add the owner to the admins access list automatically.
 config[:admins] << config[:owner]
-config[:trusted] << config[:admins]
-config[:trusted].flatten!
+config[:trusted] |= config[:admins]
 
 #Export config as a global (for outside classes)
 $config = config
@@ -28,6 +25,10 @@ class Cinch::User
 
 	def trusted?
 		$config[:admins].include?(self.nick)
+	end
+
+	def registered?
+		self.nick == self.authname
 	end
 end
 
