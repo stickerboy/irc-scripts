@@ -24,7 +24,7 @@ class Cinch::User
 	end
 
 	def trusted?
-		$config[:admins].include?(self.nick)
+		$config[:trusted].include?(self.nick)
 	end
 
 	def registered?
