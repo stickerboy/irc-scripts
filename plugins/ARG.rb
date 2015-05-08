@@ -22,6 +22,7 @@ CRICKETS_URL	= "https://www.youtube.com/watch?v=K8E_zMLCRNg"
 
 ACCESS_DENIED   = "Ha! Lower being, you dare summon me? You have no power here"
 CHANGE_NICK     = "Please use your Halo Waypoint Username or Gamertag as your nickname in the chat. You can use /nick to change your nickname. Make sure not to use spaces, as they won't work, use dashes (-) or underscores (_) or simply remove the space :)"
+REGISTER_NICK     = "Looks like you haven't registered your nickname. It is advisable to register your nickname so you can fully participate in chat. See here for details: http://wiki.mibbit.com/index.php/Create_your_own_nickname :)"
 HUNT_THE_SIGNAL_URL = "https://www.huntthesignal.com"
 
 class ARG
@@ -156,6 +157,7 @@ class ARG
 
 	def notify_mib(m)
 		if m.user.nick.match(/^mib_/) then User(m.user.nick).notice(CHANGE_NICK) end
+		if !m.user.authed? then User(m.user.nick).notice(REGISTER_NICK) end
 	end
 
 	def say(m,channel,msg)
