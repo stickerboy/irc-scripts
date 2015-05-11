@@ -59,6 +59,12 @@ Questions must have a question mark at the end to return a response
 Slaps a user with a comical response
 
 
+###Hype
+**!hype**
+
+ARE YOU NOT HYPE?
+
+
 ###Rimshot
 **!rimshot**
 
