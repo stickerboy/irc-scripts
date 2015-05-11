@@ -1,4 +1,4 @@
-class Whois 
+class Whois
 	include Cinch::Plugin
 
 	listen_to :connect, method: :load
@@ -34,7 +34,7 @@ class Whois
 
 	def whois(m,nick)
 		if User(m.user.nick).trusted?
-			hostmask = User(nick).host
+			hostmask = User(nick.strip).host
 			search = hostmask.nil?? nick : hostmask
 			results = @whois.has_key?(search) ? @whois[search] : nil
 			m.reply results.nil?? "No known matches." : "Known aliases: #{results.join(", ")}"
