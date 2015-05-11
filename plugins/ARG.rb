@@ -50,6 +50,7 @@ class ARG
 	match /potato/i, method: :potato
 	match /crickets/i, method: :crickets
 	match /say (#\w+) (.+)/i, method: :say
+	match /notice (#\w+) (.+)/i, method: :notice
 	match /join (#[[:alnum:]]+)/i, method: :join
 	match /part (#[[:alnum:]]+)/i, method: :part
 	match /quit(.*)/i, method: :quit
@@ -153,6 +154,10 @@ class ARG
 
 	def say(m,channel,msg)
 		User(m.user.nick).admin?? Channel(channel).send(msg.strip) : m.reply(ACCESS_DENIED)
+	end
+
+	def notice(m,channel,msg)
+		User(m.user.nick).admin?? Channel(channel).notice(msg.strip) : m.reply(ACCESS_DENIED)
 	end
 
 	def join(m,channel)
