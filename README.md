@@ -86,7 +86,7 @@ Just run it!
 
 Sends a message from the bot to a specific channel - only available for use by bot admins
 
-###Say
+###Notice
 !notice \<channel\> \<message\>
 
 Sends a channel notice from the bot to a specific channel - only available for use by bot admins
