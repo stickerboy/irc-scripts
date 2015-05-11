@@ -49,10 +49,8 @@ Countdown to E3 2015 on June 16th 2015
 ###AskBot
 **!ask \<question\>?**
 
-**!ask \<command\>**
-
+Returns a randomly selected response to any asked question
 Questions must have a question mark at the end to return a response
-Available commands: version, what is love
 
 
 ###Slap
