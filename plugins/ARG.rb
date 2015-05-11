@@ -7,6 +7,7 @@ require 'net/http'
 require 'digest'
 require 'json'
 
+ARGCMD			= "http://j.mp/ARGcmd"
 SITREP			= "http://j.mp/ONIsitrp"
 HYPE_URL		= "http://halo.stckr.co.uk/media/img/hype.png"
 POTATO_URL		= "http://halo.stckr.co.uk/media/img/halo5-potato.png"
@@ -41,6 +42,7 @@ class ARG
 	match /e3/i, method: :e3
 	match /ask .+\?$/i, method: :ask
 	match /arg(.*)/i, method: :arg
+	match /commands/i, method: :commands
 	match /sitrep/i, method: :sitrep
 	match /stats/i, method: :stats
 	match /logs(.*)/i, method: :logs
@@ -97,6 +99,10 @@ class ARG
 
 	def arg(m,q)
 		m.reply q.empty?? @arg["help"].first : @arg[q.strip.downcase].first
+	end
+
+	def commands(m)
+		m.reply "List of commands - #{ARGCMD}"
 	end
 
 	def sitrep(m)
