@@ -80,6 +80,12 @@ Just run it!
 
 - - -
 
+
+###Whois
+!whois \<nick|hostmask\>
+
+Returns known aliases of a nickname or hostmask - only available for use by trusted users
+
 ###Join Channel
 !join \<channel\>
 
