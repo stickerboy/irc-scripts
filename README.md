@@ -81,6 +81,11 @@ Just run it!
 - - -
 
 
+###Say
+!say \<channel\> \<message\>
+
+Sends a message from the bot to a specific channel - only available for use by bot admins
+
 ###Whois
 !whois \<nick|hostmask\>
 
