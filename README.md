@@ -16,6 +16,18 @@ Available commands: help, nick, regnick, irc, site, ruby, yanumas, radialsim, hy
 Returns either a link to the IRC logs site, or a link to a specific log. All dates must be in US date format
 
 
+###Nick
+**!nick**
+
+Returns information for user on changing their nickname
+
+
+###Register Nick
+**!regnick**
+
+Returns information for users on how to register their nickname
+
+
 ###Sitrep
 **!sitrep**
 

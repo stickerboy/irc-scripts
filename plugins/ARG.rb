@@ -43,6 +43,8 @@ class ARG
 	match /ask .+\?$/i, method: :ask
 	match /arg(.*)/i, method: :arg
 	match /commands/i, method: :commands
+	match /nick/i, method: :nick
+	match /regnick/i, method: :regnick
 	match /sitrep/i, method: :sitrep
 	match /stats/i, method: :stats
 	match /logs(.*)/i, method: :logs
@@ -103,6 +105,14 @@ class ARG
 
 	def commands(m)
 		m.reply "List of commands - #{ARGCMD}"
+	end
+
+	def nick(m)
+		m.reply @arg["nick"].first
+	end
+
+	def regnick(m)
+		m.reply @arg["regnick"].first
 	end
 
 	def sitrep(m)
