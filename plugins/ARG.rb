@@ -32,34 +32,41 @@ class ARG
 	listen_to :connect, method: :load_db
 	listen_to :connect, method: :load_rss
 	listen_to :join, method: :join_events
-	
+
 	timer 180, method: :timer
 
-	match /ask .+\?$/i, method: :ask
-	match /sitrep/i, method: :sitrep
-	match /hype/i, method: :hype
 	match /signal/i, method: :signal
-	match /potato/i, method: :potato
-	match /arg(.*)/i, method: :arg
-	match /rimshot/i, method: :rimshot
-	match /slap (.+)/i, method: :slap
-	match /stats/i, method: :stats
-	match /logs(.*)/i, method: :logs
 	match /countdown/i, method: :countdown
 	match /halo5/i, method: :halo5
 	match /e3/i, method: :e3
+	match /ask .+\?$/i, method: :ask
+	match /arg(.*)/i, method: :arg
+	match /sitrep/i, method: :sitrep
+	match /stats/i, method: :stats
+	match /logs(.*)/i, method: :logs
+	match /slap (.+)/i, method: :slap
+	match /hype/i, method: :hype
+	match /rimshot/i, method: :rimshot
+	match /potato/i, method: :potato
+	match /crickets/i, method: :crickets
 	match /say (#\w+) (.+)/i, method: :say
 	match /join (#[[:alnum:]]+)/i, method: :join
 	match /part (#[[:alnum:]]+)/i, method: :part
 	match /quit(.*)/i, method: :quit
 	match /rehash/i, method: :load_db
-	match /crickets/i, method: :crickets
 
 	def load_db(m)
 		@responses = YAML.load_file("#{config[:db]}/ask.yaml")
 		@arg = YAML.load_file("#{config[:db]}/arg.yaml")
 		@slaps = YAML.load_file("#{config[:db]}/slaps.yaml")
 		@dates = YAML.load_file("#{config[:db]}/dates.yaml")
+	end
+
+	def signal(m)
+		timeDiff = JSON.parse(open(SIGNAL_URL).read)["timeDiff"]
+		currentTime = Time.now
+		timeRemaining = Time.diff(currentTime, Time.at(currentTime.to_i+timeDiff), "%h:%m:%s")[:diff]
+		m.reply "[http://www.huntthesignal.com] Time Remaining: #{timeRemaining}"
 	end
 
 	def load_rss(m)
@@ -87,35 +94,12 @@ class ARG
 		m.reply "#{@responses[rand(0..@responses.length)]}"
 	end
 
-	def sitrep(m)
-		m.reply "//CLASSIFIED//TRUTH//SITREP - #{SITREP}"
-	end
-
-	def hype(m)
-		m.reply "#{HYPE_URL}"
-	end
-
-	def signal(m)
-		timeDiff = JSON.parse(open(SIGNAL_URL).read)["timeDiff"]
-		currentTime = Time.now
-		timeRemaining = Time.diff(currentTime, Time.at(currentTime.to_i+timeDiff), "%h:%m:%s")[:diff]
-		m.reply "[http://www.huntthesignal.com] Time Remaining: #{timeRemaining}"
-	end
-
-	def potato(m)
-		m.reply "Hi, how are you holding up? Because I'm a potato - #{POTATO_URL}"
-	end
-
 	def arg(m,q)
 		m.reply q.empty?? @arg["help"].first : @arg[q.strip.downcase].first
 	end
 
-	def rimshot(m)
-		m.action_reply "BA DOOM *TSH*"
-	end
-
-	def slap(m,nick)
-		m.action_reply "slaps #{nick.strip} with #{@slaps[rand(0..@slaps.length)]}"
+	def sitrep(m)
+		m.reply "//CLASSIFIED//TRUTH//SITREP - #{SITREP}"
 	end
 
 	def stats(m)
@@ -124,6 +108,26 @@ class ARG
 
 	def logs(m,log)
 		m.reply log[LOGS_REGEX].nil?? LOGS_URL : "#{LOGS_URL}#{LOGS_DIR}#{log.strip}.log"
+	end
+
+	def slap(m,nick)
+		m.action_reply "slaps #{nick.strip} with #{@slaps[rand(0..@slaps.length)]}"
+	end
+
+	def hype(m)
+		m.reply "#{HYPE_URL}"
+	end
+
+	def rimshot(m)
+		m.action_reply "BA DOOM *TSH*"
+	end
+
+	def potato(m)
+		m.reply "Hi, how are you holding up? Because I'm a potato - #{POTATO_URL}"
+	end
+
+	def crickets(m)
+		m.reply CRICKETS_URL
 	end
 
 	def timer
@@ -174,10 +178,6 @@ class ARG
 
 	def identify(m)
 		bot.irc.send("ns identify #{config[:password]}")
-	end
-
-	def crickets(m)
-		m.reply CRICKETS_URL
 	end
 
 end
