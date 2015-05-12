@@ -16,6 +16,7 @@ class Whois
 			#We want to do this to preserve the fact that empty results still return an empty array rather than nil.
 			@whois.update(YAML.load_file("#{config[:db]}/whois.yaml"))
 		end
+		@nicks = YAML.load_file("#{config[:db]}/nicks.yaml")
 	end
 
 	#Flush new data to the drive every five minutes.
@@ -37,7 +38,8 @@ class Whois
 			hostmask = User(nick.strip).host
 			search = hostmask.nil?? nick : hostmask
 			results = @whois.has_key?(search) ? @whois[search] : nil
-			m.reply results.nil?? "No known matches." : "Known aliases: #{results.join(", ")}"
+			m.reply "Searching for hostmask #{search}"
+			m.reply results.nil?? "No known matches." : "Known aliases: #{results.map { |nick| @nicks.include?(nick) ? Format(:bold,nick) : nick }.join(", ")}"
 		else
 			m.reply ACCESS_DENIED
 		end
