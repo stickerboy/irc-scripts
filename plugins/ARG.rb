@@ -20,11 +20,15 @@ HALO5_URL		= "http://www.xbox.com/halo5"
 RSS_URL			= "http://huntthetruth.tumblr.com/rss"
 SIGNAL_URL      = "http://93208466931351102797.com/709782/date.php"
 CRICKETS_URL	= "https://www.youtube.com/watch?v=K8E_zMLCRNg"
+INCEPTION_URL	= "https://youtu.be/8ZeyG8z86kI"
 
 ACCESS_DENIED   = "Ha! Lower being, you dare summon me? You have no power here"
 CHANGE_NICK     = "Please use your Halo Waypoint Username or Gamertag as your nickname in the chat. You can use /nick to change your nickname. Make sure not to use spaces, as they won't work, use dashes (-) or underscores (_) or simply remove the space :)"
 REGISTER_NICK     = "Looks like you haven't registered your nickname. It is advisable to register your nickname so you can fully participate in chat. See here for details: http://wiki.mibbit.com/index.php/Create_your_own_nickname :)"
 HUNT_THE_SIGNAL_URL = "https://www.huntthesignal.com"
+
+TABLE_FLIP = "(╯°□°）╯︵ ┻━┻"
+TABLE_BACK = "┬─┬ノ( º _ ºノ)"
 
 class ARG
 	include Cinch::Plugin
@@ -53,6 +57,9 @@ class ARG
 	match /rimshot/i, method: :rimshot
 	match /potato/i, method: :potato
 	match /crickets/i, method: :crickets
+	match /inception/i, method: :inception
+	match /flip/i, method: :flip
+	match /putback/i, method: :putback
 	match /say (#\w+) (.+)/i, method: :say
 	match /notice (#\w+) (.+)/i, method: :notice
 	match /join (#[[:alnum:]]+)/i, method: :join
@@ -145,6 +152,18 @@ class ARG
 
 	def crickets(m)
 		m.reply CRICKETS_URL
+	end
+
+	def inception(m)
+		m.reply INCEPTION_URL
+	end
+
+	def flip(m)
+		m.reply TABLE_FLIP
+	end
+
+	def putback(m)
+		m.reply TABLE_BACK
 	end
 
 	def timer
