@@ -53,6 +53,7 @@ class ARG
 	match /stats/i, method: :stats
 	match /logs(.*)/i, method: :logs
 	match /slap (.+)/i, method: :slap
+    match /expletive/i, method: :yoink
 	match /hype/i, method: :hype
 	match /rimshot/i, method: :rimshot
 	match /potato/i, method: :potato
@@ -72,6 +73,7 @@ class ARG
 		@arg = YAML.load_file("#{config[:db]}/arg.yaml")
 		@slaps = YAML.load_file("#{config[:db]}/slaps.yaml")
 		@dates = YAML.load_file("#{config[:db]}/dates.yaml")
+		@yoinks = YAML.load_file("#{config[:db]}/yoinks.yaml")
 	end
 
 	def signal(m)
@@ -136,6 +138,10 @@ class ARG
 
 	def slap(m,nick)
 		m.action_reply "slaps #{nick.strip} with #{@slaps[rand(0..@slaps.length)]}"
+	end
+
+	def yoink(m)
+		m.reply "#{@yoinks[rand(0..@yoinks.length)]}"
 	end
 
 	def hype(m)
