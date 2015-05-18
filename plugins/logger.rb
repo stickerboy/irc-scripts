@@ -9,6 +9,7 @@ class Logger
 	listen_to :nick, method: :log_nick
 	listen_to :kick, method: :log_kick
 	listen_to :ban, method: :log_ban
+	listen_to :unban, method: :log_unban
 	timer 60, method: :check_midnight
 
 	def initialize(*args)
@@ -58,7 +59,7 @@ class Logger
 		end
 	end
 
-	### Logs joins
+	### Logs channel join
 	def log_join(m)
 		time = Time.now.strftime(@time_format)
 		@logfile.puts(sprintf( "[%{time}] * %{nick} joined the channel [%{host}]",
@@ -67,7 +68,7 @@ class Logger
 								:nick	=> m.user.name))
 	end
 
-	### Logs parts
+	### Logs channel part
 	def log_part(m)
 		time = Time.now.strftime(@time_format)
 		@logfile.puts(sprintf( "[%{time}] * %{nick} left the channel [%{host}]",
@@ -86,7 +87,7 @@ class Logger
 								:nick		=> m.user.nick))
 	end
 
-	### Logs kick
+	### Logs kicked user
 	def log_kick(m)
 		time = Time.now.strftime(@time_format)
 		@logfile.puts(sprintf( "[%{time}] * %{nick} was kicked from the channel the channel [hostmask: %{host}]",
@@ -95,10 +96,19 @@ class Logger
 								:nick	=> m.user.name))
 	end
 
-	### Logs a message!
+	### Logs banned user
 	def log_ban(m,banmask)
 		time = Time.now.strftime(@time_format)
-		@logfile.puts(sprintf( "[%{time}] * #{m.user.name} banned %{nick} from the channel [%{mask}]",
+		@logfile.puts(sprintf( "[%{time}] * %{nick} was banned from the channel by #{m.user.name} - [%{mask}]",
+								:time	=> time,
+								:nick	=> User(m.user.nick),
+								:mask	=> banmask))
+	end
+
+	### Logs unbanned user
+	def log_unban(m,banmask)
+		time = Time.now.strftime(@time_format)
+		@logfile.puts(sprintf( "[%{time}] * ban on %{nick} was removed by #{m.user.name} - [%{mask}]",
 								:time	=> time,
 								:nick	=> User(m.user.nick),
 								:mask	=> banmask))
