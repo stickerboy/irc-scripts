@@ -3,7 +3,7 @@ class Logger
 
 	listen_to :connect, method: :setup
 	listen_to :disconnect, method: :cleanup
-	listen_to :channel, method: :log_public_message
+	listen_to :message, method: :log_public_message
 	listen_to :join, method: :log_join
 	listen_to :part, method: :log_part
 	listen_to :nick, method: :log_nick
@@ -45,10 +45,17 @@ class Logger
 	### Logs channel messages
 	def log_public_message(m)
 		time = Time.now.strftime(@time_format)
-		@logfile.puts(sprintf( "[%{time}] <%{nick}> %{msg}",
+		if m.ctcp_command == "ACTION"
+			@logfile.puts(sprintf( "[%{time}] * <%{nick}> %{msg}",
+								:time	=> time,
+								:nick	=> m.user.name,
+								:msg	=> m.message.sub('ACTION ', '')))
+		else
+			@logfile.puts(sprintf( "[%{time}] <%{nick}> %{msg}",
 								:time	=> time,
 								:nick	=> m.user.name,
 								:msg	=> m.message))
+		end
 	end
 
 	### Logs joins
