@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require 'cinch'
 require 'yaml'
 require 'time_diff'
