@@ -10,6 +10,9 @@ class Logger
 	listen_to :kick, method: :log_kick
 	listen_to :ban, method: :log_ban
 	listen_to :unban, method: :log_unban
+	listen_to :op, method: :log_op
+	listen_to :halfop, method: :log_halfop
+	listen_to :voice, method: :log_unban
 	timer 60, method: :check_midnight
 
 	def initialize(*args)
@@ -49,12 +52,12 @@ class Logger
 		if m.ctcp_command == "ACTION"
 			@logfile.puts(sprintf( "[%{time}] * <%{nick}> %{msg}",
 								:time	=> time,
-								:nick	=> m.user.name,
+								:nick	=> m.user.nick,
 								:msg	=> m.message.sub('ACTION ', '')))
 		else
 			@logfile.puts(sprintf( "[%{time}] <%{nick}> %{msg}",
 								:time	=> time,
-								:nick	=> m.user.name,
+								:nick	=> m.user.nick,
 								:msg	=> m.message))
 		end
 	end
@@ -65,7 +68,7 @@ class Logger
 		@logfile.puts(sprintf( "[%{time}] * %{nick} joined the channel [%{host}]",
 								:time	=> time,
 								:host	=> User(m.user.nick).host,
-								:nick	=> m.user.name))
+								:nick	=> m.user.nick))
 	end
 
 	### Logs channel part
@@ -73,8 +76,8 @@ class Logger
 		time = Time.now.strftime(@time_format)
 		@logfile.puts(sprintf( "[%{time}] * %{nick} left the channel [%{host}]",
 								:time	=> time,
-								:host	=> User(m.user.nick).mask("%h"),
-								:nick	=> m.user.name))
+								:host	=> User(m.user.nick).mask,
+								:nick	=> m.user.nick))
 	end
 
 	### Logs nick change
@@ -87,30 +90,63 @@ class Logger
 								:nick		=> m.user.nick))
 	end
 
+
+
+
 	### Logs kicked user
-	def log_kick(m)
+	def log_kick(m,usr)
 		time = Time.now.strftime(@time_format)
-		@logfile.puts(sprintf( "[%{time}] * %{nick} was kicked from the channel the channel [hostmask: %{host}]",
+		@logfile.puts(sprintf( "[%{time}] * %{nick} [%{mask}] was kicked from the channel the channel by %{op}",
 								:time	=> time,
-								:host	=> User(m.user.nick).mask("%h"),
-								:nick	=> m.user.name))
+								:op		=> User(m.user.nick),
+								:nick	=> usr.nick,
+								:mask	=> User(usr.nick).mask))
 	end
 
 	### Logs banned user
-	def log_ban(m,banmask)
+	def log_ban(m,usr)
 		time = Time.now.strftime(@time_format)
-		@logfile.puts(sprintf( "[%{time}] * %{nick} was banned from the channel by #{m.user.name} - [%{mask}]",
+		@logfile.puts(sprintf( "[%{time}] * %{nick} [%{mask}] was banned from the channel by %{op}",
 								:time	=> time,
-								:nick	=> User(m.user.nick),
-								:mask	=> banmask))
+								:op		=> m.user.nick,
+								:nick	=> usr.nick,
+								:mask	=> User(usr.nick).mask))
 	end
 
 	### Logs unbanned user
-	def log_unban(m,banmask)
+	def log_unban(m,usr)
 		time = Time.now.strftime(@time_format)
-		@logfile.puts(sprintf( "[%{time}] * ban on %{nick} was removed by #{m.user.name} - [%{mask}]",
+		@logfile.puts(sprintf( "[%{time}] * ban on %{nick} [%{mask}] was removed by %{op}",
 								:time	=> time,
-								:nick	=> User(m.user.nick),
-								:mask	=> banmask))
+								:op		=> m.user.nick,
+								:nick	=> usr.nick,
+								:mask	=> User(usr.nick).mask))
+	end
+
+	### Logs opped user
+	def log_op(m,usr)
+		time = Time.now.strftime(@time_format)
+		@logfile.puts(sprintf( "[%{time}] * %{nick} was given Operator status - [%{mask}]",
+								:time	=> time,
+								:nick	=> usr.nick,
+								:mask	=> User(usr.nick).mask))
+	end
+
+	### Logs half opped user
+	def log_halfop(m,usr)
+		time = Time.now.strftime(@time_format)
+		@logfile.puts(sprintf( "[%{time}] * %{nick} was given Half-Op status - [%{mask}]",
+								:time	=> time,
+								:nick	=> usr.nick,
+								:mask	=> User(usr.nick).mask))
+	end
+
+	### Logs voiced user
+	def log_voice(m,usr)
+		time = Time.now.strftime(@time_format)
+		@logfile.puts(sprintf( "[%{time}] * %{nick} was given Voice - [%{mask}]",
+								:time	=> time,
+								:nick	=> usr.nick,
+								:mask	=> User(usr.nick).mask))
 	end
 end
