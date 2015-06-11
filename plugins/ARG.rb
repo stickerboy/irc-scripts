@@ -42,7 +42,7 @@ class ARG
 	listen_to :join, method: :join_events
 
 	timer 180, method: :timer
-	gi_timer 180, method: :gi_timer
+	timer 180, method: :gi_timer
 
 	match /signal/i, method: :signal
 	match /countdown/i, method: :countdown
