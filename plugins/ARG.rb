@@ -18,6 +18,7 @@ LOGS_REGEX		= /([0-9]{2}-[0-9]{2}-[0-9]{4})/
 TUMBLR_URL		= "http://huntthetruth.tumblr.com"
 HALO5_URL		= "http://www.xbox.com/halo5"
 RSS_URL			= "http://huntthetruth.tumblr.com/rss"
+GI_RSS_URL		= "http://www.gameinformer.com/b/mainfeed.aspx?Tags=Halo+5:+Guardians"
 SIGNAL_URL      = "http://93208466931351102797.com/709782/date.php"
 CRICKETS_URL	= "https://www.youtube.com/watch?v=K8E_zMLCRNg"
 INCEPTION_URL	= "https://youtu.be/8ZeyG8z86kI"
@@ -36,9 +37,11 @@ class ARG
 	listen_to :connect, method: :identify
 	listen_to :connect, method: :load_db
 	listen_to :connect, method: :load_rss
+	listen_to :connect, method: :load_gi_rss
 	listen_to :join, method: :join_events
 
 	timer 180, method: :timer
+	gi_timer 180, method: :gi_timer
 
 	match /signal/i, method: :signal
 	match /countdown/i, method: :countdown
@@ -85,6 +88,12 @@ class ARG
 
 	def load_rss(m)
 		@doc = Nokogiri::XML(open(RSS_URL))
+		@guid = Hash.new
+		@guid[1] = @doc.xpath('//guid').first.text
+	end
+
+	def load_gi_rss(m)
+		@doc = Nokogiri::XML(open(GI_RSS_URL))
 		@guid = Hash.new
 		@guid[1] = @doc.xpath('//guid').first.text
 	end
@@ -179,6 +188,19 @@ class ARG
 
 		if(doc.xpath('//guid').first.text != @guid[1])
 			Channel("#halo5").notice "New HUNTtheTRUTH blog post: #{title} #{guid}"
+			@guid[1] = doc.xpath('//guid').first.text
+		end
+
+	end
+
+	def gi_timer
+		doc = Nokogiri::XML(open(GI_RSS_URL))
+		guid = doc.xpath('//guid').first.text
+		title = doc.xpath('//title')[1].text
+		link = doc.xpath('//link')[1].text
+
+		if(doc.xpath('//guid').first.text != @guid[1])
+			Channel("#halo5").notice "New Game Informer blog post: #{title} #{link}"
 			@guid[1] = doc.xpath('//guid').first.text
 		end
 
