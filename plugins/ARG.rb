@@ -95,8 +95,8 @@ class ARG
 
 	def load_gi_rss(m)
 		@doc = Nokogiri::XML(open(GI_RSS_URL))
-		@guid = Hash.new
-		@guid[1] = @doc.xpath('//guid').first.text
+		@gi_guid = Hash.new
+		@gi_guid[1] = @doc.xpath('//guid').first.text
 	end
 
 	def countdown(m)
@@ -187,9 +187,9 @@ class ARG
 		guid = doc.xpath('//guid').first.text
 		title = doc.xpath('//title')[1].text
 
-		if(doc.xpath('//guid').first.text != @guid[1])
+		if(doc.xpath('//guid').first.text != @gi_guid[1])
 			Channel("#halo5").notice "New HUNTtheTRUTH blog post: #{title} #{guid}"
-			@guid[1] = doc.xpath('//guid').first.text
+			@gi_guid[1] = doc.xpath('//guid').first.text
 		end
 
 	end
