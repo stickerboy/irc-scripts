@@ -19,15 +19,12 @@ LOGS_REGEX		= /([0-9]{2}-[0-9]{2}-[0-9]{4})/
 TUMBLR_URL		= "http://huntthetruth.tumblr.com"
 HALO5_URL		= "http://www.xbox.com/halo5"
 RSS_URL			= "http://huntthetruth.tumblr.com/rss"
-GI_RSS_URL		= "http://www.gameinformer.com/b/mainfeed.aspx?Tags=Halo+5:+Guardians"
-SIGNAL_URL      = "http://93208466931351102797.com/709782/date.php"
 CRICKETS_URL	= "https://www.youtube.com/watch?v=K8E_zMLCRNg"
 INCEPTION_URL	= "https://youtu.be/8ZeyG8z86kI"
 
 ACCESS_DENIED   = "Ha! Lower being, you dare summon me? You have no power here"
 CHANGE_NICK     = "Please use your Halo Waypoint Username or Gamertag as your nickname in the chat. You can use /nick to change your nickname. Make sure not to use spaces, as they won't work, use dashes (-) or underscores (_) or simply remove the space :)"
 REGISTER_NICK     = "Looks like you haven't registered your nickname. It is advisable to register your nickname so you can fully participate in chat. See here for details: http://wiki.mibbit.com/index.php/Create_your_own_nickname :)"
-HUNT_THE_SIGNAL_URL = "https://www.huntthesignal.com"
 
 TABLE_FLIP = "(╯°□°）╯︵ ┻━┻"
 TABLE_BACK = "┬─┬ノ( º _ ºノ)"
@@ -38,11 +35,9 @@ class ARG
 	listen_to :connect, method: :identify
 	listen_to :connect, method: :load_db
 	listen_to :connect, method: :load_rss
-	listen_to :connect, method: :load_gi_rss
-	listen_to :join, method: :join_events
+	#listen_to :join, method: :join_events
 
 	timer 180, method: :timer
-	timer 180, method: :gi_timer
 
 	match /signal/i, method: :signal
 	match /countdown/i, method: :countdown
@@ -80,23 +75,10 @@ class ARG
 		@yoinks = YAML.load_file("#{config[:db]}/yoinks.yaml")
 	end
 
-	def signal(m)
-		timeDiff = JSON.parse(open(SIGNAL_URL).read)["timeDiff"]
-		currentTime = Time.now
-		timeRemaining = Time.diff(currentTime, Time.at(currentTime.to_i+timeDiff), "%h:%m:%s")[:diff]
-		m.reply "[http://www.huntthesignal.com] Time Remaining: #{timeRemaining}"
-	end
-
 	def load_rss(m)
 		@doc = Nokogiri::XML(open(RSS_URL))
 		@guid = Hash.new
 		@guid[1] = @doc.xpath('//guid').first.text
-	end
-
-	def load_gi_rss(m)
-		@doc = Nokogiri::XML(open(GI_RSS_URL))
-		@gi_guid = Hash.new
-		@gi_guid[1] = @doc.xpath('//guid').first.text
 	end
 
 	def countdown(m)
@@ -111,7 +93,7 @@ class ARG
 
 	def e3(m)
 		e3launch = Time.diff(Time.now, @dates["e3"], '%d %h Hours %m Minutes')
-		m.reply "Countdown to E3 2015 - June 16th to 18th: #{e3launch[:diff]}"
+		m.reply "Countdown to E3 2016 - June 14 to 16: #{e3launch[:diff]}"
 	end
 
 	def ask(m)
@@ -190,19 +172,6 @@ class ARG
 		if(doc.xpath('//guid').first.text != @gi_guid[1])
 			Channel("#halo5").notice "New HUNTtheTRUTH blog post: #{title} #{guid}"
 			@gi_guid[1] = doc.xpath('//guid').first.text
-		end
-
-	end
-
-	def gi_timer
-		doc = Nokogiri::XML(open(GI_RSS_URL))
-		guid = doc.xpath('//guid').first.text
-		title = doc.xpath('//title')[1].text
-		link = doc.xpath('//link')[1].text
-
-		if(doc.xpath('//guid').first.text != @guid[1])
-			Channel("#halo5").notice "New Game Informer blog post: #{title} #{link}"
-			@guid[1] = doc.xpath('//guid').first.text
 		end
 
 	end
