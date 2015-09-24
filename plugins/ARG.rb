@@ -169,9 +169,9 @@ class ARG
 		guid = doc.xpath('//guid').first.text
 		title = doc.xpath('//title')[1].text
 
-		if(doc.xpath('//guid').first.text != @gi_guid[1])
+		if(doc.xpath('//guid').first.text != @guid[1])
 			Channel("#halo5").notice "New HUNTtheTRUTH blog post: #{title} #{guid}"
-			@gi_guid[1] = doc.xpath('//guid').first.text
+			@guid[1] = doc.xpath('//guid').first.text
 		end
 
 	end
