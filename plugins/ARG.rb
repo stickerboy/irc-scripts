@@ -39,7 +39,7 @@ class ARG
 
 	timer 180, method: :timer
 
-	match /signal/i, method: :signal
+	match /htt/i, method: :timer
 	match /countdown/i, method: :countdown
 	match /halo5/i, method: :halo5
 	match /e3/i, method: :e3
