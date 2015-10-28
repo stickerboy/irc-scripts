@@ -17,7 +17,7 @@ LOGS_URL		=  "http://halo.stckr.co.uk/"
 LOGS_DIR		= "logs/TRUTH/2015/LOGS/"
 LOGS_REGEX		= /([0-9]{2}-[0-9]{2}-[0-9]{4})/
 TUMBLR_URL		= "http://huntthetruth.tumblr.com"
-HALO5_URL		= "http://www.xbox.com/halo5"
+HALO5_URL		= "https://j.mp/Halo5IsHere"
 RSS_URL			= "http://huntthetruth.tumblr.com/rss"
 CRICKETS_URL	= "https://www.youtube.com/watch?v=K8E_zMLCRNg"
 INCEPTION_URL	= "https://youtu.be/8ZeyG8z86kI"
@@ -88,7 +88,8 @@ class ARG
 
 	def halo5(m)
 		halo5release = Time.diff(Time.now, @dates["halo5"], '%d %h Hours %m Minutes')
-		m.reply "#halo5 - Release Date 27th Oct 2015: #{halo5release[:diff]} - #{HALO5_URL}"
+		m.reply "#halo5 - IT'S HERE \o/ - #{HALO5_URL}"
+		#m.reply "#halo5 - Release Date 27th Oct 2015: #{halo5release[:diff]} - #{HALO5_URL}"
 	end
 
 	def e3(m)
