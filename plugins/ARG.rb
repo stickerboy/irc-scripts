@@ -91,7 +91,7 @@ class ARG
 
 	def halo5(m)
 		#halo5release = Time.diff(Time.now, @dates["halo5"], '%d %h Hours %m Minutes')
-		m.reply "#halo5 - IT'S HERE \\o/ - #{HALO5_URL}"
+		m.reply "#halo5 - IT'S HERE WHOO! - #{HALO5_URL}"
 		#m.reply "#halo5 - Release Date 27th Oct 2015: #{halo5release[:diff]} - #{HALO5_URL}"
 	end
 
