@@ -96,7 +96,7 @@ class ARG
 	end
 
 	def halo6(m)
-		m.reply "#halo5 #{HALO6_URL}"
+		m.reply "#{HALO6_URL}"
 	end
 	
 	def halo7(m)
