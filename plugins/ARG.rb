@@ -18,6 +18,7 @@ LOGS_DIR		= "logs/TRUTH/2015/LOGS/"
 LOGS_REGEX		= /([0-9]{2}-[0-9]{2}-[0-9]{4})/
 TUMBLR_URL		= "http://huntthetruth.tumblr.com"
 HALO5_URL		= "https://j.mp/Halo5IsHere"
+HALO6_URL		= "http://i.imgur.com/rGys8cb.jpg?1"
 RSS_URL			= "http://huntthetruth.tumblr.com/rss"
 CRICKETS_URL	= "https://www.youtube.com/watch?v=K8E_zMLCRNg"
 INCEPTION_URL	= "https://youtu.be/8ZeyG8z86kI"
@@ -42,6 +43,8 @@ class ARG
 	match /htt/i, method: :timer
 	match /countdown/i, method: :countdown
 	match /halo5/i, method: :halo5
+	match /halo6/i, method: :halo6
+	match /halo7/i, method: :halo7
 	match /e3/i, method: :e3
 	match /ask .+\?$/i, method: :ask
 	match /arg(.*)/i, method: :arg
@@ -52,7 +55,7 @@ class ARG
 	match /stats/i, method: :stats
 	match /logs(.*)/i, method: :logs
 	match /slap (.+)/i, method: :slap
-    match /expletive/i, method: :yoink
+    	match /expletive/i, method: :yoink
 	match /hype/i, method: :hype
 	match /rimshot/i, method: :rimshot
 	match /potato/i, method: :potato
@@ -87,9 +90,17 @@ class ARG
 	end
 
 	def halo5(m)
-		halo5release = Time.diff(Time.now, @dates["halo5"], '%d %h Hours %m Minutes')
+		#halo5release = Time.diff(Time.now, @dates["halo5"], '%d %h Hours %m Minutes')
 		m.reply "#halo5 - IT'S HERE \\o/ - #{HALO5_URL}"
 		#m.reply "#halo5 - Release Date 27th Oct 2015: #{halo5release[:diff]} - #{HALO5_URL}"
+	end
+
+	def halo6(m)
+		m.reply "#halo5 #{HALO6_URL}"
+	end
+	
+	def halo7(m)
+		bot.irc.send("KICK #@name #{user} :TOO SOON!")
 	end
 
 	def e3(m)
