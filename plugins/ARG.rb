@@ -23,6 +23,7 @@ RSS_URL			= "http://huntthetruth.tumblr.com/rss"
 CRICKETS_URL	= "https://www.youtube.com/watch?v=K8E_zMLCRNg"
 INCEPTION_URL	= "https://youtu.be/8ZeyG8z86kI"
 NEVER_URL	= "https://youtu.be/bE2j_0FnRn4"
+BURN_URL	= "http://i.imgur.com/ZkenoCI.gif"
 
 ACCESS_DENIED   = "Ha! Lower being, you dare summon me? You have no power here"
 CHANGE_NICK     = "Please use your Halo Waypoint Username or Gamertag as your nickname in the chat. You can use /nick to change your nickname. Make sure not to use spaces, as they won't work, use dashes (-) or underscores (_) or simply remove the space :)"
@@ -65,6 +66,7 @@ class ARG
 	match /flip/i, method: :flip
 	match /putback/i, method: :putback
 	match /never/i, method: :never
+	match /burn/i, method :burn
 	match /say (#\w+) (.+)/i, method: :say
 	match /notice (#\w+) (.+)/i, method: :notice
 	match /join (#[[:alnum:]]+)/i, method: :join
@@ -181,6 +183,10 @@ class ARG
 	def never(m)
 		m.reply NEVER_URL
 	end
+	
+	def burn(m)
+		m.reply "Apply cold water - #{BURN_URL}"	
+	end
 
 	def timer
 		doc = Nokogiri::XML(open(RSS_URL))
@@ -191,7 +197,6 @@ class ARG
 			Channel("#halo5").notice "New HUNTtheTRUTH blog post: #{title} #{guid}"
 			@guid[1] = doc.xpath('//guid').first.text
 		end
-
 	end
 
 	def join_events(m)
