@@ -106,7 +106,7 @@ class ARG
 	end
 	
 	def halo7(m)
-		bot.irc.send("KICK #@name #{user} :TOO SOON!")
+		m.channel.kick(m.user, reason = "TOO SOON!")
 	end
 
 	def e3(m)
