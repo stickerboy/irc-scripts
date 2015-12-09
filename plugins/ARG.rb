@@ -67,8 +67,8 @@ class ARG
 	match /flip/i, method: :flip
 	match /putback/i, method: :putback
 	match /never/i, method: :never
-	match /burn/i, method :burn
-	match /keepclean/i, method :keepclean
+	match /burn/i, method: :burn
+	match /keepclean/i, method: :keepclean
 	match /say (#\w+) (.+)/i, method: :say
 	match /notice (#\w+) (.+)/i, method: :notice
 	match /join (#[[:alnum:]]+)/i, method: :join
