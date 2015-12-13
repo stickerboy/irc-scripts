@@ -69,6 +69,7 @@ class ARG
 	match /never/i, method: :never
 	match /burn/i, method: :burn
 	match /keepclean/i, method: :keepclean
+	match /seek/i, method: :seek
 	match /say (#\w+) (.+)/i, method: :say
 	match /notice (#\w+) (.+)/i, method: :notice
 	match /join (#[[:alnum:]]+)/i, method: :join
@@ -192,6 +193,10 @@ class ARG
 
 	def keepclean(m)
 		m.reply "KEEP IT CLEAN! #{KEEPCLEAN_URL}"
+	end
+	
+	def seek(m)
+		m.reply "Seek the truth, behold the truth, reveal the truth. That is the law, and the whole of the law."
 	end
 
 	def timer
