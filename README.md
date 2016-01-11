@@ -106,6 +106,31 @@ Just run it!
 
 ...
 
+
+###Seek
+**!seek*
+
+Ask MrToasty ;)
+
+
+###Keep it clean
+**!keepclean**
+
+I'll only ask once
+
+
+###Burn
+**!burn**
+
+Apply cold water
+
+
+###Never
+**!never**
+
+Nnnevaaaaaaarrrrrr!
+
+
 - - -
 
 
