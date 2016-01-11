@@ -52,6 +52,18 @@ Returns remaining time until a specific countdown time has been reached (i.e. #H
 Countdown to the release of Halo 5 on October 27th 2015
 
 
+###Halo 6 Countdown
+**!halo6**
+
+Soon...
+
+
+###Halo 7 Countdown
+**!halo7**
+
+TOO SOON!
+
+
 ###E3 Countdown
 **!e3**
 
