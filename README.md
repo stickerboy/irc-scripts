@@ -107,6 +107,30 @@ Just run it!
 ...
 
 
+###Inception
+**!inception**
+
+We have to go deeper
+
+
+###Flip
+**!flip**
+
+(╯°□°）╯︵┻━┻
+
+
+###Put Back
+**!putback**
+
+┬─┬ノ(º_ºノ)
+
+
+###Expletive
+**!expletive**
+
+-Yoink!- all the things!
+
+
 ###Seek
 **!seek*
 
