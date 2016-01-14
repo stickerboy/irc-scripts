@@ -237,9 +237,10 @@ class ARG
 	end
 
 	def uptime(m)
-		uptime = %x( w | head -1 ).split(', ')
+		uptime = %x( w | head -1 ).split(',')
 		days = uptime[0][9..-1].strip!
-		mins = uptime[1]
+		mins = uptime[1].split(':')
+        mins = "#{mins[0]} Hours #{mins[1]} mins"
 		m.reply(days + mins)
 	end
 
