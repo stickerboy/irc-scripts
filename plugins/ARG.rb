@@ -22,13 +22,13 @@ HALO6_URL		= "http://i.imgur.com/rGys8cb.jpg?1"
 RSS_URL			= "http://huntthetruth.tumblr.com/rss"
 CRICKETS_URL	= "https://www.youtube.com/watch?v=K8E_zMLCRNg"
 INCEPTION_URL	= "https://youtu.be/8ZeyG8z86kI"
-NEVER_URL	= "https://youtu.be/bE2j_0FnRn4"
-BURN_URL	= "http://i.imgur.com/ZkenoCI.gif"
+NEVER_URL		= "https://youtu.be/bE2j_0FnRn4"
+BURN_URL		= "http://i.imgur.com/ZkenoCI.gif"
 KEEPCLEAN_URL	= "http://i.imgur.com/mXPoq6e.jpg"
 
-ACCESS_DENIED   = "Ha! Lower being, you dare summon me? You have no power here"
-CHANGE_NICK     = "Please use your Halo Waypoint Username or Gamertag as your nickname in the chat. You can use /nick to change your nickname. Make sure not to use spaces, as they won't work, use dashes (-) or underscores (_) or simply remove the space :)"
-REGISTER_NICK     = "Looks like you haven't registered your nickname. It is advisable to register your nickname so you can fully participate in chat. See here for details: http://wiki.mibbit.com/index.php/Create_your_own_nickname :)"
+ACCESS_DENIED	= "Ha! Lower being, you dare summon me? You have no power here"
+CHANGE_NICK		= "Please use your Halo Waypoint Username or Gamertag as your nickname in the chat. You can use /nick to change your nickname. Make sure not to use spaces, as they won't work, use dashes (-) or underscores (_) or simply remove the space :)"
+REGISTER_NICK	= "Looks like you haven't registered your nickname. It is advisable to register your nickname so you can fully participate in chat. See here for details: http://wiki.mibbit.com/index.php/Create_your_own_nickname :)"
 
 TABLE_FLIP = "(╯°□°）╯︵ ┻━┻"
 TABLE_BACK = "┬─┬ノ( º _ ºノ)"
@@ -58,7 +58,7 @@ class ARG
 	match /stats/i, method: :stats
 	match /logs(.*)/i, method: :logs
 	match /slap (.+)/i, method: :slap
-    	match /expletive/i, method: :yoink
+	match /expletive/i, method: :yoink
 	match /hype/i, method: :hype
 	match /rimshot/i, method: :rimshot
 	match /potato/i, method: :potato
@@ -73,6 +73,7 @@ class ARG
 	match /say (#\w+) (.+)/i, method: :say
 	match /notice (#\w+) (.+)/i, method: :notice
 	match /join (#[[:alnum:]]+)/i, method: :join
+	match /uptime/i, method: :uptime
 	match /part (#[[:alnum:]]+)/i, method: :part
 	match /quit(.*)/i, method: :quit
 	match /rehash/i, method: :load_db
@@ -105,7 +106,7 @@ class ARG
 	def halo6(m)
 		m.reply "#{HALO6_URL}"
 	end
-	
+
 	def halo7(m)
 		m.channel.kick(m.user, reason = "TOO SOON!")
 	end
@@ -182,19 +183,19 @@ class ARG
 	def putback(m)
 		m.reply TABLE_BACK
 	end
-	
+
 	def never(m)
 		m.reply NEVER_URL
 	end
-	
+
 	def burn(m)
-		m.reply "Apply cold water - #{BURN_URL}"	
+		m.reply "Apply cold water - #{BURN_URL}"
 	end
 
 	def keepclean(m)
 		m.reply "KEEP IT CLEAN! #{KEEPCLEAN_URL}"
 	end
-	
+
 	def seek(m)
 		m.reply "Seek the truth, behold the truth, reveal the truth. That is the law, and the whole of the law."
 	end
@@ -233,6 +234,13 @@ class ARG
 
 	def part(m,channel)
 		User(m.user.nick).admin?? Channel(channel).part : m.reply(ACCESS_DENIED)
+	end
+
+	def uptime(m)
+		uptime = %x( w | head -1 ).split(', ')
+		days = uptime[0][9..-1].strip!
+		mins = uptime[1]
+		m.reply(days + mins)
 	end
 
 	def quit(m,msg)
