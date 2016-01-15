@@ -8,36 +8,23 @@ require 'net/http'
 require 'digest'
 require 'json'
 
-ARGCMD			= "http://j.mp/ARGcmd"
-SITREP			= "http://j.mp/ONIsitrp"
-HYPE_URL		= "http://halo.stckr.co.uk/media/img/hype.png"
-POTATO_URL		= "http://halo.stckr.co.uk/media/img/halo5-potato.png"
-STATS_URL		= "http://arg.furiousn00b.com/HUNTtheTRUTH/irc/halo5.html"
 LOGS_URL		=  "http://halo.stckr.co.uk/"
 LOGS_DIR		= "logs/TRUTH/2015/LOGS/"
 LOGS_REGEX		= /([0-9]{2}-[0-9]{2}-[0-9]{4})/
 TUMBLR_URL		= "http://huntthetruth.tumblr.com"
-HALO5_URL		= "https://j.mp/Halo5IsHere"
-HALO6_URL		= "http://i.imgur.com/rGys8cb.jpg?1"
 RSS_URL			= "http://huntthetruth.tumblr.com/rss"
-CRICKETS_URL	= "https://www.youtube.com/watch?v=K8E_zMLCRNg"
-INCEPTION_URL	= "https://youtu.be/8ZeyG8z86kI"
-NEVER_URL		= "https://youtu.be/bE2j_0FnRn4"
-BURN_URL		= "http://i.imgur.com/ZkenoCI.gif"
-KEEPCLEAN_URL	= "http://i.imgur.com/mXPoq6e.jpg"
+
 
 ACCESS_DENIED	= "Ha! Lower being, you dare summon me? You have no power here"
 CHANGE_NICK		= "Please use your Halo Waypoint Username or Gamertag as your nickname in the chat. You can use /nick to change your nickname. Make sure not to use spaces, as they won't work, use dashes (-) or underscores (_) or simply remove the space :)"
 REGISTER_NICK	= "Looks like you haven't registered your nickname. It is advisable to register your nickname so you can fully participate in chat. See here for details: http://wiki.mibbit.com/index.php/Create_your_own_nickname :)"
-
-TABLE_FLIP = "(╯°□°）╯︵ ┻━┻"
-TABLE_BACK = "┬─┬ノ( º _ ºノ)"
 
 class ARG
 	include Cinch::Plugin
 
 	listen_to :connect, method: :identify
 	listen_to :connect, method: :load_db
+	listen_to :connect, method: :load_oneshots
 	listen_to :connect, method: :load_rss
 	#listen_to :join, method: :join_events
 
@@ -45,31 +32,16 @@ class ARG
 
 	match /htt/i, method: :timer
 	match /countdown/i, method: :countdown
-	match /halo5/i, method: :halo5
-	match /halo6/i, method: :halo6
 	match /halo7/i, method: :halo7
 	match /e3/i, method: :e3
 	match /ask .+\?$/i, method: :ask
 	match /arg(.*)/i, method: :arg
-	match /commands/i, method: :commands
 	match /nick/i, method: :nick
 	match /regnick/i, method: :regnick
-	match /sitrep/i, method: :sitrep
-	match /stats/i, method: :stats
 	match /logs(.*)/i, method: :logs
 	match /slap (.+)/i, method: :slap
 	match /expletive/i, method: :yoink
-	match /hype/i, method: :hype
 	match /rimshot/i, method: :rimshot
-	match /potato/i, method: :potato
-	match /crickets/i, method: :crickets
-	match /inception/i, method: :inception
-	match /flip/i, method: :flip
-	match /putback/i, method: :putback
-	match /never/i, method: :never
-	match /burn/i, method: :burn
-	match /keepclean/i, method: :keepclean
-	match /seek/i, method: :seek
 	match /say (#\w+) (.+)/i, method: :say
 	match /notice (#\w+) (.+)/i, method: :notice
 	match /join (#[[:alnum:]]+)/i, method: :join
@@ -84,11 +56,19 @@ class ARG
 		@slaps = YAML.load_file("#{config[:db]}/slaps.yaml")
 		@dates = YAML.load_file("#{config[:db]}/dates.yaml")
 		@yoinks = YAML.load_file("#{config[:db]}/yoinks.yaml")
+	end
+
+	def load_oneshots(m)
+		@oneshots = YAML.load_file("#{config[:db]}/oneshots.yaml")
+		#Clear out the @matchers array so we don't double register.
 		self.class.instance_variable_set(:@matchers,[])
-		@arg.each { |key, value|
+		self.class.instance_variable_set(:@handlers,[])
+		#Dynamically generate command and method pairs.
+		@oneshots.each { |key, value|
 			self.class.send(:define_method,key.to_sym, ->(m) { m.reply value })
 			self.class.send(:match,/#{key}/i, method: key.to_sym)
 		}
+		#Force the matchers handler update (may have unforseen consequences, hopefully not though)
 		self.send(:__register_matchers)
 	end
 
@@ -101,16 +81,6 @@ class ARG
 	def countdown(m)
 		audiolog = Time.diff(Time.now, @dates["podcast"], '%d %h Hours %m Minutes')
 		m.reply "#HUNTtheTRUTH - Next audio log release: #{audiolog[:diff]} - #{TUMBLR_URL}"
-	end
-
-	def halo5(m)
-		#halo5release = Time.diff(Time.now, @dates["halo5"], '%d %h Hours %m Minutes')
-		m.reply "#halo5 - IT'S HERE WHOO! - #{HALO5_URL}"
-		#m.reply "#halo5 - Release Date 27th Oct 2015: #{halo5release[:diff]} - #{HALO5_URL}"
-	end
-
-	def halo6(m)
-		m.reply "#{HALO6_URL}"
 	end
 
 	def halo7(m)
@@ -130,24 +100,12 @@ class ARG
 		m.reply q.empty?? @arg["help"].first : @arg[q.strip.downcase].first
 	end
 
-	def commands(m)
-		m.reply "List of commands - #{ARGCMD}"
-	end
-
 	def nick(m)
 		m.reply @arg["nick"].first
 	end
 
 	def regnick(m)
 		m.reply @arg["regnick"].first
-	end
-
-	def sitrep(m)
-		m.reply "//CLASSIFIED//TRUTH//SITREP - #{SITREP}"
-	end
-
-	def stats(m)
-		m.reply STATS_URL
 	end
 
 	def logs(m,log)
@@ -162,48 +120,8 @@ class ARG
 		m.reply "#{@yoinks[rand(0..@yoinks.length)]}"
 	end
 
-	def hype(m)
-		m.reply "#{HYPE_URL}"
-	end
-
 	def rimshot(m)
 		m.action_reply "BA DOOM *TSH*"
-	end
-
-	def potato(m)
-		m.reply "Hi, how are you holding up? Because I'm a potato - #{POTATO_URL}"
-	end
-
-	def crickets(m)
-		m.reply CRICKETS_URL
-	end
-
-	def inception(m)
-		m.reply INCEPTION_URL
-	end
-
-	def flip(m)
-		m.reply TABLE_FLIP
-	end
-
-	def putback(m)
-		m.reply TABLE_BACK
-	end
-
-	def never(m)
-		m.reply NEVER_URL
-	end
-
-	def burn(m)
-		m.reply "Apply cold water - #{BURN_URL}"
-	end
-
-	def keepclean(m)
-		m.reply "KEEP IT CLEAN! #{KEEPCLEAN_URL}"
-	end
-
-	def seek(m)
-		m.reply "Seek the truth, behold the truth, reveal the truth. That is the law, and the whole of the law."
 	end
 
 	def timer
