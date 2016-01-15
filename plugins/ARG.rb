@@ -113,7 +113,11 @@ class ARG
 	end
 
 	def slap(m,nick)
-		m.action_reply "slaps #{nick.strip} with #{@slaps[rand(0..@slaps.length)]}"
+		if (nick.strip == bot.nick)
+			m.action_reply "slaps #{m.user.nick} instead with #{@slaps[rand(0..@slaps.length)]}"
+		else
+			m.action_reply "slaps #{nick.strip} with #{@slaps[rand(0..@slaps.length)]}"
+		end
 	end
 
 	def yoink(m)
