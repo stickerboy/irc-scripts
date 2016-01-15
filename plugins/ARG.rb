@@ -84,6 +84,12 @@ class ARG
 		@slaps = YAML.load_file("#{config[:db]}/slaps.yaml")
 		@dates = YAML.load_file("#{config[:db]}/dates.yaml")
 		@yoinks = YAML.load_file("#{config[:db]}/yoinks.yaml")
+		self.class.instance_variable_set(:@matchers,[])
+		@arg.each { |key, value|
+			self.class.send(:define_method,key.to_sym, ->(m) { m.reply value })
+			self.class.send(:match,/#{key}/i, method: key.to_sym)
+		}
+		self.send(:__register_matchers)
 	end
 
 	def load_rss(m)
