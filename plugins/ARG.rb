@@ -25,15 +25,13 @@ class ARG
 	listen_to :connect, method: :identify
 	listen_to :connect, method: :load_db
 	listen_to :connect, method: :load_oneshots
-	listen_to :connect, method: :load_rss
+	listen_to :connect, method: :load_dates
 	#listen_to :join, method: :join_events
+	#listen_to :connect, method: :load_rss
 
-	timer 180, method: :timer
+	#timer 180, method: :htt_timer
 
-	match /htt/i, method: :timer
-	match /countdown/i, method: :countdown
 	match /halo7/i, method: :halo7
-	match /e3/i, method: :e3
 	match /ask .+\?$/i, method: :ask
 	match /arg(.*)/i, method: :arg
 	match /nick/i, method: :nick
@@ -55,7 +53,6 @@ class ARG
 		@responses = YAML.load_file("#{config[:db]}/ask.yaml")
 		@arg = YAML.load_file("#{config[:db]}/arg.yaml")
 		@slaps = YAML.load_file("#{config[:db]}/slaps.yaml")
-		@dates = YAML.load_file("#{config[:db]}/dates.yaml")
 		@yoinks = YAML.load_file("#{config[:db]}/yoinks.yaml")
 	end
 
@@ -73,6 +70,29 @@ class ARG
 		self.send(:__register_matchers)
 	end
 
+	def load_dates(m)
+		@dates = YAML.load_file("#{config[:db]}/dates.yaml")
+		#Clear out the @matchers array so we don't double register.
+		self.class.instance_variable_set(:@matchers,[])
+		self.class.instance_variable_set(:@handlers,[])
+		#Dynamically generate command and method pairs.
+		@dates.each { |key, value|
+			event_time = Time.parse("#{value}")
+			diff_to_today = (event_time - Time.now).to_i
+			event = Time.diff(Time.now, value, '%d %h Hours %m Minutes')
+			self.class.send(:define_method,key.to_sym, ->(m) {
+				if diff_to_today > 0
+					m.reply "#{event[:diff]}"
+				else
+					m.reply "This event has now ended"
+				end
+			})
+			self.class.send(:match,/#{key}/i, method: key.to_sym)
+		}
+		#Force the matchers handler update (may have unforseen consequences, hopefully not though)
+		self.send(:__register_matchers)
+	end
+
 	#countdowns and timers
 	def load_rss(m)
 		@doc = Nokogiri::XML(open(RSS_URL))
@@ -80,18 +100,19 @@ class ARG
 		@guid[1] = @doc.xpath('//guid').first.text
 	end
 
-	def countdown(m)
-		audiolog = Time.diff(Time.now, @dates["podcast"], '%d %h Hours %m Minutes')
-		m.reply "#HUNTtheTRUTH - Next audio log release: #{audiolog[:diff]} - #{TUMBLR_URL}"
+	def htt_timer
+		doc = Nokogiri::XML(open(RSS_URL))
+		guid = doc.xpath('//guid').first.text
+		title = doc.xpath('//title')[1].text
+
+		if(doc.xpath('//guid').first.text != @guid[1])
+			Channel("#halo5").notice "New HUNTtheTRUTH blog post: #{title} #{guid}"
+			@guid[1] = doc.xpath('//guid').first.text
+		end
 	end
 
 	def halo7(m)
 		m.channel.kick(m.user, reason = "TOO SOON!")
-	end
-
-	def e3(m)
-		e3launch = Time.diff(Time.now, @dates["e3"], '%d %h Hours %m Minutes')
-		m.reply "Countdown to E3 2016 - June 14 to 16: #{e3launch[:diff]}"
 	end
 
 	#genaral replies
@@ -129,17 +150,6 @@ class ARG
 
 	def rimshot(m)
 		m.action_reply "BA DOOM *TSH*"
-	end
-
-	def timer
-		doc = Nokogiri::XML(open(RSS_URL))
-		guid = doc.xpath('//guid').first.text
-		title = doc.xpath('//title')[1].text
-
-		if(doc.xpath('//guid').first.text != @guid[1])
-			Channel("#halo5").notice "New HUNTtheTRUTH blog post: #{title} #{guid}"
-			@guid[1] = doc.xpath('//guid').first.text
-		end
 	end
 
 	#mib events
