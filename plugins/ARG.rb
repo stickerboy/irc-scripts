@@ -47,6 +47,7 @@ class ARG
 	match /join (#[[:alnum:]]+)/i, method: :join
 	match /uptime/i, method: :uptime
 	match /part (#[[:alnum:]]+)/i, method: :part
+	match /kick\s+(.+)/i, method: :kick_user
 	match /quit(.*)/i, method: :quit
 	match /rehash/i, method: :load_db
 
@@ -162,6 +163,23 @@ class ARG
 
 	def part(m,channel)
 		User(m.user.nick).admin?? Channel(channel).part : m.reply(ACCESS_DENIED)
+	end
+
+	def kick_user(m,nick,reason = "I'm just a bot, don't take it personally")
+		if m.channel.has_user?(nick.strip)
+			if User(m.user.nick).trusted?
+				if (nick.strip == bot.nick)
+					m.reply("I might be a bot, but I'm not going to kick myself ¬_¬")
+				else
+					m.channel.kick(nick.strip,reason)
+				end
+			else
+				m.reply(ACCESS_DENIED)
+			end
+		else
+			m.action_reply "kicks and misses..."
+			m.reply "#{nick.strip} must be a wizzard :o"
+		end
 	end
 
 	def uptime(m)
