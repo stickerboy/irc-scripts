@@ -45,10 +45,10 @@ class ARG
 	match /say (#\w+) (.+)/i, method: :say
 	match /notice (#\w+) (.+)/i, method: :notice
 	match /join (#[[:alnum:]]+)/i, method: :join
-	match /uptime/i, method: :uptime
 	match /part (#[[:alnum:]]+)/i, method: :part
 	match /kick\s+(.+)/i, method: :kick_user
 	match /quit(.*)/i, method: :quit
+	match /uptime/i, method: :uptime
 	match /rehash/i, method: :load_db
 
 	def load_db(m)
@@ -73,6 +73,7 @@ class ARG
 		self.send(:__register_matchers)
 	end
 
+	#countdowns and timers
 	def load_rss(m)
 		@doc = Nokogiri::XML(open(RSS_URL))
 		@guid = Hash.new
@@ -93,6 +94,7 @@ class ARG
 		m.reply "Countdown to E3 2016 - June 14 to 16: #{e3launch[:diff]}"
 	end
 
+	#genaral replies
 	def ask(m)
 		m.reply "#{@responses[rand(0..@responses.length)]}"
 	end
@@ -140,6 +142,7 @@ class ARG
 		end
 	end
 
+	#mib events
 	def join_events(m)
 		notify_mib(m)
 	end
@@ -149,6 +152,7 @@ class ARG
 		if !m.user.authed? then User(m.user.nick).notice(REGISTER_NICK) end
 	end
 
+	#bot / admin events
 	def say(m,channel,msg)
 		User(m.user.nick).admin?? Channel(channel).send(msg.strip) : m.reply(ACCESS_DENIED)
 	end
@@ -182,14 +186,6 @@ class ARG
 		end
 	end
 
-	def uptime(m)
-		uptime = %x( w | head -1 ).split(',')
-		days = uptime[0][9..-1].strip!
-		mins = uptime[1].split(':')
-        mins = "#{mins[0]} Hours #{mins[1]} mins"
-		m.reply(days + mins)
-	end
-
 	def quit(m,msg)
 		if User(m.user.nick).owner?
 			bot.plugins.each { |plugin|
@@ -201,6 +197,14 @@ class ARG
 			bot.warn("Unauthorized quit command from #{m.user.nick}")
 			m.reply("I'm afraid I can't let you do that", true)
 		end
+	end
+
+	def uptime(m)
+		uptime = %x( w | head -1 ).split(',')
+		days = uptime[0][9..-1].strip!
+		mins = uptime[1].split(':')
+		mins = "#{mins[0]} Hours #{mins[1]} mins"
+		m.reply(days + mins)
 	end
 
 	def identify(m)
