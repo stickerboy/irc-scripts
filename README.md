@@ -1,19 +1,18 @@
 ##ARGbot
 
+###AskBot
+**!ask \<question\>?**
+
+Returns a randomly selected response to any asked question
+Questions must have a question mark at the end to return a response
+
+
 ###ARG
 **!arg**
 
 **!arg \<command\>**
 
 Available commands: help, nick, regnick, irc, site, ruby, yanumas, radialsim, hydrai, grollo, orkid, n00b, tools, decode
-
-
-###Logs
-**!logs**
-
-**!logs \<date: MM-DD-YYYY\>**
-
-Returns either a link to the IRC logs site, or a link to a specific log. All dates must be in US date format
 
 
 ###Nick
@@ -28,6 +27,24 @@ Returns information for user on changing their nickname
 Returns information for users on how to register their nickname
 
 
+###Logs
+**!logs**
+
+**!logs \<date: MM-DD-YYYY\>**
+Returns either a link to the IRC logs site, or a link to a specific log. All dates must be in US date format
+
+###Uptime
+**!uptime**
+
+Displays uptime of the bot
+
+
+###Slap
+**!slap \<user\>**
+
+Slaps a user with a comical response
+
+
 ###Sitrep
 **!sitrep**
 
@@ -40,59 +57,28 @@ Returns a link to the Waypoint situation report thread - a recap of important ev
 Returns a link to Furiousn00b's IRC stats
 
 
-###Countdown
-**!countdown**
-
-Returns remaining time until a specific countdown time has been reached (i.e. #HUNTtheTRUTH audio logs)
-
-
-###Halo 5 Countdown
-**!halo5**
-
-Countdown to the release of Halo 5 on October 27th 2015
-
-
-###Halo 6 Countdown
-**!halo6**
-
-Soon...
-
-
 ###Halo 7 Countdown
 **!halo7**
 
 TOO SOON!
 
 
-###E3 Countdown
-**!e3**
+###Expletive
+**!expletive**
 
-Countdown to E3 2015 on June 16th 2015
-
-
-###AskBot
-**!ask \<question\>?**
-
-Returns a randomly selected response to any asked question
-Questions must have a question mark at the end to return a response
-
-
-###Slap
-**!slap \<user\>**
-
-Slaps a user with a comical response
-
-
-###Hype
-**!hype**
-
-ARE YOU NOT HYPE?
+-Yoink!- all the things!
 
 
 ###Rimshot
 **!rimshot**
 
 BA DOOM \*_TSH_\*
+
+
+###Hype
+**!hype**
+
+ARE YOU NOT HYPE?
 
 
 ###Potato
@@ -123,12 +109,6 @@ We have to go deeper
 **!putback**
 
 ┬─┬ノ(º_ºノ)
-
-
-###Expletive
-**!expletive**
-
--Yoink!- all the things!
 
 
 ###Seek
@@ -182,3 +162,8 @@ Joins a specific channel - only available for use by bot admins
 !part \<channel\>
 
 Parts a specific channel - only available for use by bot admins
+
+###Kick User
+!kick \<user\>
+
+Kicks user from channel - only available for use by bot admins
