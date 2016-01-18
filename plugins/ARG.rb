@@ -31,6 +31,7 @@ class ARG
 
 	#timer 180, method: :htt_timer
 
+	match /help/i, method: :help
 	match /halo7/i, method: :halo7
 	match /ask .+\?$/i, method: :ask
 	match /nick/i, method: :nick
@@ -89,6 +90,11 @@ class ARG
 		}
 		#Force the matchers handler update (may have unforseen consequences, hopefully not though)
 		self.send(:__register_matchers)
+	end
+
+	def help(m)
+		commands = @oneshots.keys.join(', ')
+		m.reply "List of available commands: #{commands}, halo7, logs, slap, yoink, rimshot, say, notice, join, part, kick, quit, uptime"
 	end
 
 	#countdowns and timers

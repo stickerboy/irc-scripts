@@ -1,5 +1,11 @@
 ##ARGbot
 
+###Help / Commands
+**!help**
+
+Returns a list of all available commands
+
+
 ###AskBot
 **!ask \<question\>?**
 
