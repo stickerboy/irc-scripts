@@ -221,12 +221,12 @@ class LogPlus
 
   def cmd_log_stop(msg)
     if @stopped
-      msg.reply "I do not log currently."
+msg.reply "Logs are not currently being tracked"
       return
     end
 
     unless msg.channel.opped?(msg.user)
-      msg.reply "You are not authorized to command me so!"
+      msg.reply ACCESS_DENIED
       return
     end
 
@@ -241,11 +241,11 @@ class LogPlus
     end
 
     unless msg.channel.opped?(msg.user)
-      msg.reply "You are not authorized to command me so!"
+      msg.reply ACCESS_DENIED
       return
     end
 
-    msg.reply "OK. Everything that follows will be logged again."
+    msg.reply "Firing up them 'ol logs again"
     @stopped = false
   end
 
