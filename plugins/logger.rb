@@ -184,7 +184,7 @@ class LogPlus
   def startup(*)
     @plainlogdir = config[:plainlogdir]
     @htmllogdir  = config[:htmllogdir]
-    @timelogformat = config[:timelogformat] = "%H:%M"
+    @timelogformat = config[:timelogformat] = "%H:%M:%S"
     @extrahead = config[:extrahead] || DEFAULT_CSS
     @stopped = false
 
@@ -434,7 +434,7 @@ class LogPlus
   # Logs the given text to the plaintext logfile. Does NOT
   # acquire the file mutex!
   def log_own_plainmessage(text, is_notice)
-    @plainlogfile.puts(sprintf("%{time} %{nick} | %{msg}",
+    @plainlogfile.puts(sprintf("[%{time}] %{nick} | %{msg}",
                                :time => Time.now.strftime(@timelogformat),
                                :nick => bot.nick,
                                :msg => text))
