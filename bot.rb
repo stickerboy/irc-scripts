@@ -50,8 +50,7 @@ bot = Cinch::Bot.new do
    }
    c.plugins.options[Whois] = { :db => config[:db] }
    c.plugins.options[LogPlus] = {
-     :plainlogdir => "logs/txtlogs", # required
-     :htmllogdir  => "logs/htmllogs", # required
+     :plainlogdir => "logs", # required
      :timelogformat => "%H:%M:%S",
      :extrahead => ""
    }
