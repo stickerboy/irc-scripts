@@ -7,14 +7,6 @@ Returns a randomly selected response to any asked question
 Questions must have a question mark at the end to return a response
 
 
-###ARG
-**!arg**
-
-**!arg \<command\>**
-
-Available commands: help, nick, regnick, irc, site, ruby, yanumas, radialsim, hydrai, grollo, orkid, n00b, tools, decode
-
-
 ###Nick
 **!nick**
 

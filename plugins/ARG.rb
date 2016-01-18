@@ -33,7 +33,6 @@ class ARG
 
 	match /halo7/i, method: :halo7
 	match /ask .+\?$/i, method: :ask
-	match /arg(.*)/i, method: :arg
 	match /nick/i, method: :nick
 	match /regnick/i, method: :regnick
 	match /logs(.*)/i, method: :logs
@@ -51,7 +50,6 @@ class ARG
 
 	def load_db(m)
 		@responses = YAML.load_file("#{config[:db]}/ask.yaml")
-		@arg = YAML.load_file("#{config[:db]}/arg.yaml")
 		@slaps = YAML.load_file("#{config[:db]}/slaps.yaml")
 		@yoinks = YAML.load_file("#{config[:db]}/yoinks.yaml")
 	end
@@ -118,18 +116,6 @@ class ARG
 	#genaral replies
 	def ask(m)
 		m.reply "#{@responses[rand(0..@responses.length)]}"
-	end
-
-	def arg(m,q)
-		m.reply q.empty?? @arg["help"].first : @arg[q.strip.downcase].first
-	end
-
-	def nick(m)
-		m.reply @arg["nick"].first
-	end
-
-	def regnick(m)
-		m.reply @arg["regnick"].first
 	end
 
 	def logs(m,log)
