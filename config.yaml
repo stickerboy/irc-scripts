@@ -1,0 +1,12 @@
+:channels:
+ - "#IDidntConfigureMyBot"
+:nick: Turtle
+:server: your.irc.server.here
+:realname: Barry Scott
+:password: p455w0rd
+:db: plugins/db
+:owner: Me
+:admins:
+ - Myself
+:trusted:
+ - I
